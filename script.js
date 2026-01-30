@@ -82,48 +82,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 1.5 FETCH VOICES (Cartesia) ---
-    async function fetchCartesiaVoices() {
-        // If keys are empty (sanitized), warn user
-        const apiKey = KEYS.CARTESIA;
-        if (!apiKey || apiKey.length < 10) {
-            console.warn("Cartesia Key missing. Please add to KEYS object.");
-            return;
-        }
+    // --- 1.5 POPULATE VOICES (Hardcoded/Mapped) ---
+    function populateVoiceList() {
+        const selects = [voiceSelect, modalVoiceSelect];
+        selects.forEach(sel => {
+            if (!sel) return;
+            sel.innerHTML = '';
 
-        try {
-            const response = await fetch("https://api.cartesia.ai/v1/voices", {
-                headers: {
-                    "X-API-Key": apiKey,
-                    "Cartesia-Version": "2023-12-15"
+            PRESET_VOICES.forEach(voice => {
+                const opt = document.createElement('option');
+                opt.value = voice.id;
+                // Better Mapping: Name - Description
+                opt.textContent = voice.description ? `${voice.name} - ${voice.description}` : `${voice.name} (${voice.language})`;
+
+                // Force Default Selection for Sonic
+                if (voice.id === "005af375-5aad-4c02-9551-7fc411430542") {
+                    opt.selected = true;
                 }
+
+                sel.appendChild(opt);
             });
-
-            if (!response.ok) throw new Error("Failed to fetch voices");
-            const data = await response.json();
-
-            // Populate Selects
-            const selects = [voiceSelect, modalVoiceSelect];
-            selects.forEach(sel => {
-                if (!sel) return;
-                sel.innerHTML = ''; // Clear loading
-
-                data.forEach(voice => {
-                    if (voice.language !== 'en' && !voice.is_public) return;
-
-                    const opt = document.createElement('option');
-                    opt.value = voice.id;
-                    opt.textContent = `${voice.name} (${voice.language})`;
-                    if (voice.name.toLowerCase().includes("sonic")) {
-                        opt.selected = true;
-                    }
-                    sel.appendChild(opt);
-                });
-            });
-
-        } catch (e) {
-            console.error("Voice Fetch Error:", e);
-        }
+        });
     }
 
     // --- 2. LOGOUT / EXIT BUTTON ---
