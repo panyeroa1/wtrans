@@ -1,0 +1,21 @@
+{
+    "name": "Maximo Primo Translator",
+    "short_name": "Maximo",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#efeae2",
+    "theme_color": "#128C7E",
+    "description": "Premium multi-language translator with voice support.",
+    "icons": [
+        {
+            "src": "./img/icons8-whatsapp-48.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./img/icons8-whatsapp-48.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

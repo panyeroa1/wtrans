@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximo Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+
+        h1 {
+            color: #00A884;
+        }
+
+        .user-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .role-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .role-student {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+
+        .role-teacher {
+            background: #fff3e0;
+            color: #e65100;
+            font-weight: bold;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: #00A884;
+            color: white;
+        }
+
+        button.demote {
+            background: #e53935;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Classroom Admin</h1>
+    <div class="user-list" id="admin-user-list">
+        <p>Loading users...</p>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs",
+            authDomain: "macx-5feca.firebaseapp.com",
+            databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", // Verified from previous context
+            projectId: "macx-5feca",
+            storageBucket: "macx-5feca.firebasestorage.app",
+            messagingSenderId: "331391736018",
+            appId: "1:331391736018:web:8d472445f02b26aef0750b"
+        };
+        firebase.initializeApp(FIREBASE_CONFIG);
+        const db = firebase.database();
+
+        const listEl = document.getElementById('admin-user-list');
+
+        db.ref('users').on('value', (snapshot) => {
+            listEl.innerHTML = '';
+            const users = snapshot.val() || {};
+
+            if (Object.keys(users).length === 0) {
+                listEl.innerHTML = '<p>No users active.</p>';
+                return;
+            }
+
+            Object.entries(users).forEach(([uid, user]) => {
+                const div = document.createElement('div');
+                div.className = 'user-item';
+
+                const roleClass = user.role === 'teacher' ? 'role-teacher' : 'role-student';
+                const actionBtn = user.role === 'teacher'
+                    ? `<button class="demote" onclick="setRole('${uid}', 'student')">Demote to Student</button>`
+                    : `<button onclick="setRole('${uid}', 'teacher')">Promote to Teacher</button>`;
+
+                div.innerHTML = `
+                    <div>
+                        <strong>${user.name || 'Anonymous'}</strong> 
+                        <span class="role-badge ${roleClass}">${user.role || 'student'}</span>
+                    </div>
+                    <div>
+                        ${actionBtn}
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+        });
+
+        window.setRole = (uid, role) => {
+            db.ref(`users/${uid}/role`).set(role);
+        };
+    </script>
+</body>
+
+</html>

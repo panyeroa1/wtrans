@@ -10,22 +10,27 @@ const FIREBASE_CONFIG = {
     measurementId: "G-YKE3356VE6"
 };
 
-// Placeholder Keys - User to Fill
+// Placeholder Keys - REPLACE WITH YOUR REAL KEYS IN VERCEL ENV OR LOCALLY
+// GitHub blocked the previous push because these were exposed.
 const KEYS = {
-    OPENAI: 'YOUR_OPENAI_API_KEY',
-    DEEPGRAM: 'YOUR_DEEPGRAM_API_KEY',
-    CARTESIA: 'YOUR_CARTESIA_API_KEY',
-    GOOGLE_TRANSLATE: 'YOUR_GOOGLE_API_KEY' // Optional if using free generic fetch or OpenAI
+    OPENAI: '',
+    DEEPGRAM: '',
+    CARTESIA: '',
+    GOOGLE_TRANSLATE: ''
 };
+
+import { LANGUAGES } from './languages.js';
 
 // --- INITIALIZATION ---
 let app;
-let analytics;
+let db;
+let currentUser = null;
+let currentRoom = 'succes'; // Default
 
 try {
     if (firebase) {
         app = firebase.initializeApp(FIREBASE_CONFIG);
-        analytics = firebase.analytics();
+        db = firebase.database();
         console.log("Firebase initialized");
     }
 } catch (e) {
@@ -33,37 +38,258 @@ try {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- UI ELEMENTS ---
     const chatContainer = document.getElementById('chat-container');
     const messageInput = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-btn');
     const voiceSelect = document.getElementById('voice-select');
+    const languageSelect = document.getElementById('target-language-select');
 
-    let audioContext;
-    let ws;
-    let mediaRecorder;
-    let audioChunks = [];
+    // Modal Elements
+    const loginModal = document.getElementById('login-modal');
+    const joinBtn = document.getElementById('join-btn');
+    const usernameInput = document.getElementById('username-input');
+    const roomCodeInput = document.getElementById('room-code-input');
+    const modalLanguageSelect = document.getElementById('modal-language-select');
+    const modalVoiceSelect = document.getElementById('modal-voice-select');
+    const usersListEl = document.getElementById('users-list');
 
-    // Focus input on load
-    messageInput.focus();
+    // --- 0. INIT CALLS ---
+    populateLanguages();
+    fetchCartesiaVoices();
+    setupExitButton();
 
-    // Event Listeners
-    sendBtn.addEventListener('click', handleInput);
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleInput();
+    // --- 1. LANGUAGE POPULATION ---
+    function populateLanguages() {
+        const allLangSelects = [languageSelect, modalLanguageSelect];
+        if (typeof LANGUAGES !== 'undefined') {
+            LANGUAGES.forEach(lang => {
+                allLangSelects.forEach(sel => {
+                    if (sel) {
+                        const option = document.createElement('option');
+                        option.value = lang.code;
+                        option.textContent = lang.name;
+                        sel.appendChild(option);
+                    }
+                });
+            });
+            if (LANGUAGES.length > 0) {
+                if (languageSelect) languageSelect.value = LANGUAGES[0].code;
+                if (modalLanguageSelect) modalLanguageSelect.value = LANGUAGES[0].code;
+            }
+        }
+    }
+
+    // --- 1.5 FETCH VOICES (Cartesia) ---
+    async function fetchCartesiaVoices() {
+        // If keys are empty (sanitized), warn user
+        const apiKey = KEYS.CARTESIA;
+        if (!apiKey || apiKey.length < 10) {
+            console.warn("Cartesia Key missing. Please add to KEYS object.");
+            return;
+        }
+
+        try {
+            const response = await fetch("https://api.cartesia.ai/v1/voices", {
+                headers: {
+                    "X-API-Key": apiKey,
+                    "Cartesia-Version": "2023-12-15"
+                }
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch voices");
+            const data = await response.json();
+
+            // Populate Selects
+            const selects = [voiceSelect, modalVoiceSelect];
+            selects.forEach(sel => {
+                if (!sel) return;
+                sel.innerHTML = ''; // Clear loading
+
+                data.forEach(voice => {
+                    if (voice.language !== 'en' && !voice.is_public) return;
+
+                    const opt = document.createElement('option');
+                    opt.value = voice.id;
+                    opt.textContent = `${voice.name} (${voice.language})`;
+                    if (voice.name.toLowerCase().includes("sonic")) {
+                        opt.selected = true;
+                    }
+                    sel.appendChild(opt);
+                });
+            });
+
+        } catch (e) {
+            console.error("Voice Fetch Error:", e);
+        }
+    }
+
+    // --- 2. LOGOUT / EXIT BUTTON ---
+    function setupExitButton() {
+        const exitBtn = document.createElement('div');
+        exitBtn.className = 'tool';
+        exitBtn.title = "Exit Room";
+        exitBtn.style.cursor = 'pointer';
+        exitBtn.innerHTML = '<img src="./img/icons8-logout-50.png" alt="Exit" style="width:24px; height:24px;">';
+        exitBtn.onclick = () => {
+            if (confirm("Exit the room and log out?")) {
+                localStorage.removeItem('maximo_uid');
+                localStorage.removeItem('maximo_room');
+                window.location.reload();
+            }
+        };
+        const toolsContainer = document.querySelector('.tools');
+        if (toolsContainer) toolsContainer.insertBefore(exitBtn, toolsContainer.firstChild);
+    }
+
+    // --- 3. IDENTITY CHECK (Persistence) ---
+    const storedUid = localStorage.getItem('maximo_uid');
+    const storedRoom = localStorage.getItem('maximo_room');
+
+    if (storedUid) {
+        // Auto-Join or Restore Session
+        currentRoom = storedRoom || 'succes';
+
+        db.ref(`rooms/${currentRoom}/users/${storedUid}`).once('value').then(snap => {
+            if (snap.exists()) {
+                currentUser = { uid: storedUid, ...snap.val() };
+                loginModal.style.display = 'none';
+                initPipeline();
+                // Sync UI
+                if (currentUser.language && languageSelect) languageSelect.value = currentUser.language;
+                if (currentUser.voiceId && voiceSelect) voiceSelect.value = currentUser.voiceId;
+            } else {
+                loginModal.style.display = 'flex';
+            }
+        });
+    } else {
+        loginModal.style.display = 'flex';
+    }
+
+    // --- 4. JOIN ACTION ---
+    joinBtn.addEventListener('click', () => {
+        const name = usernameInput.value.trim();
+        const room = (roomCodeInput && roomCodeInput.value.trim()) ? roomCodeInput.value.trim() : 'succes';
+        const lang = modalLanguageSelect ? modalLanguageSelect.value : (languageSelect.value || 'en');
+        const voice = modalVoiceSelect ? modalVoiceSelect.value : (voiceSelect.value || '');
+
+        if (!name) return alert("Please enter a name");
+
+        // Set Globals
+        currentRoom = room;
+        if (languageSelect) languageSelect.value = lang;
+        if (voiceSelect) voiceSelect.value = voice;
+
+        // Create New User
+        const newUserRef = db.ref(`rooms/${currentRoom}/users`).push();
+        const uid = newUserRef.key;
+
+        const userData = {
+            name: name,
+            role: 'student', // Default
+            online: true,
+            language: lang,
+            voiceId: voice,
+            joinedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        newUserRef.set(userData).then(() => {
+            // PERSIST SESSION
+            localStorage.setItem('maximo_uid', uid);
+            localStorage.setItem('maximo_room', currentRoom);
+
+            currentUser = { uid, ...userData };
+            loginModal.style.display = 'none';
+            initPipeline();
+        });
     });
 
-    // --- MAIN HANDLER ---
+    function initPipeline() {
+        listenToUsers();
+        listenToMessages();
+        setupChatHandlers();
+    }
+
+    // --- 5. LISTENERS ---
+    function listenToUsers() {
+        db.ref(`rooms/${currentRoom}/users`).on('value', snap => {
+            usersListEl.innerHTML = '';
+            const users = snap.val() || {};
+
+            Object.entries(users).forEach(([uid, user]) => {
+                const div = document.createElement('div');
+                div.className = 'user';
+                const isTeacher = user.role === 'teacher';
+                const badge = isTeacher ? '⭐' : '';
+
+                div.innerHTML = `
+                    <div class="pfp nopic">
+                        <img src="./img/icons8-account-96.png" alt="">
+                    </div>
+                    <div class="userinfo">
+                         <div class="name">
+                            <p>${user.name} ${badge}</p>
+                        </div>
+                        <div class="message">
+                            <p class="role-badge">${user.role}</p>
+                        </div>
+                    </div>
+                `;
+                usersListEl.appendChild(div);
+            });
+        });
+
+        // Listen to MY role
+        db.ref(`rooms/${currentRoom}/users/${currentUser.uid}/role`).on('value', snap => {
+            currentUser.role = snap.val();
+            // SHOW ADMIN LINK IF TEACHER
+            const existingAdminBtn = document.getElementById('admin-link-btn');
+            if (currentUser.role === 'teacher') {
+                if (!existingAdminBtn) {
+                    const btn = document.createElement('div');
+                    btn.id = 'admin-link-btn';
+                    btn.className = 'tool';
+                    btn.style.cursor = 'pointer';
+                    btn.innerHTML = '<img src="./img/icons8-settings-50.png" alt="Admin" style="width:30px; height:30px;">';
+                    btn.title = "Admin Panel";
+                    btn.onclick = () => window.open('admin.html', '_blank');
+
+                    const toolsDiv = document.querySelector('.tools');
+                    if (toolsDiv) toolsDiv.appendChild(btn);
+                }
+            } else {
+                if (existingAdminBtn) existingAdminBtn.remove();
+            }
+        });
+    }
+
+    function listenToMessages() {
+        chatContainer.innerHTML = '';
+        db.ref(`rooms/${currentRoom}/messages`).limitToLast(50).on('child_added', snap => {
+            const msg = snap.val();
+            const isMe = msg.senderId === currentUser.uid;
+            displayFirebaseMessage(msg, isMe);
+        });
+    }
+
+    // Event Listeners (Moved to setupChatHandlers)
+    function setupChatHandlers() {
+        sendBtn.addEventListener('click', handleInput);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleInput();
+        });
+    }
+
+    // --- MAIN HANDLER (FIREBASE) ---
     async function handleInput() {
-        // Check if there is text input
         const text = messageInput.value.trim();
 
         if (text) {
             // Text Mode
             messageInput.value = '';
-            addMessage(text, 'sender');
-            await processPipeline(text);
+            await pushMessage(text);
         } else {
-            // Audio Mode (Simple Toggle for now)
+            // Audio Mode
             if (mediaRecorder && mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
                 updateMicIcon(false);
@@ -73,6 +299,74 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    async function pushMessage(text) {
+        if (!currentUser) return;
+        await db.ref(`rooms/${currentRoom}/messages`).push({
+            text: text,
+            senderId: currentUser.uid,
+            senderName: currentUser.name,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    }
+
+    // Redefined to Render only (replaced old addMessage logic)
+    function displayFirebaseMessage(msg, isSender) {
+        // If my message, show as is.
+        // If other message, TRANSLATE then show.
+
+        if (isSender) {
+            addMessageToUI(msg.text, 'sender', msg.senderName);
+        } else {
+            // Translate for ME
+            const targetLang = languageSelect.value;
+            translateText(msg.text, targetLang).then(translated => {
+                addMessageToUI(translated, 'receiver', msg.senderName);
+                speakText(translated, voiceSelect.value); // Auto-Play
+            });
+        }
+    }
+
+    function addMessageToUI(text, type, senderName) {
+        const isSender = type === 'sender';
+        const containerDiv = document.createElement('div');
+        containerDiv.classList.add(isSender ? 'senderContainer' : 'receiverContainer', 'arrowm');
+
+        const bubbleWrapper = document.createElement('div');
+        bubbleWrapper.classList.add(isSender ? 'sender' : 'reciver', 'mepop');
+
+        const replyDiv = document.createElement('div');
+        replyDiv.classList.add('thereply');
+
+        const p = document.createElement('p');
+        p.innerHTML = `<strong>${senderName || 'Unknown'}</strong><br>${text}`; // Show Name
+
+        const timeDiv = document.createElement('div');
+        timeDiv.classList.add('time');
+
+        const arrowHover = document.createElement('div');
+        arrowHover.classList.add('arrowhover', isSender ? 'arrowG' : 'arrowW');
+        const arrowImg = document.createElement('img');
+        arrowImg.src = "./img/icons8-expand-arrow-96.png";
+        arrowHover.appendChild(arrowImg);
+
+        replyDiv.appendChild(p);
+        replyDiv.appendChild(timeDiv);
+        replyDiv.appendChild(arrowHover);
+        bubbleWrapper.appendChild(replyDiv);
+        containerDiv.appendChild(bubbleWrapper);
+        chatContainer.appendChild(containerDiv);
+
+        setTimeout(() => {
+            containerDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }, 100);
+    }
+
+    // ... STT/TTS variables ...
+    let audioContext;
+    let ws;
+    let mediaRecorder;
+    let audioChunks = [];
 
     function updateMicIcon(isRecording) {
         const img = sendBtn.querySelector('img');
@@ -96,25 +390,41 @@ document.addEventListener('DOMContentLoaded', () => {
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
+        // --- Visualizer Setup ---
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 64;
+        source.connect(analyser);
+
+        const visualizer = document.getElementById('visualizer');
+        if (visualizer) {
+            visualizer.style.display = 'block';
+            visualizer.width = visualizer.parentElement.clientWidth;
+            visualize(analyser, visualizer);
+        }
+        // ------------------------
+
         mediaRecorder.ondataavailable = (event) => {
             audioChunks.push(event.data);
         };
 
         mediaRecorder.onstop = async () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); // or webm
-            addMessage("🎤 Processing Audio...", 'sender');
+            // Stop Visualizer
+            if (visualizer) visualizer.style.display = 'none';
+            // Stop tracks
+            stream.getTracks().forEach(track => track.stop());
+
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
 
             try {
                 const text = await transcribeAudio(audioBlob);
                 if (text) {
-                    // Update the "Processing..." message or just add new one
-                    // For simplicity, we just add the recognized text
-                    addMessage(text, 'sender');
-                    await processPipeline(text);
+                    await pushMessage(text);
                 }
             } catch (err) {
                 console.error("STT Failed:", err);
-                addMessage("⚠️ Audio transcription failed.", 'receiver');
+                alert("Audio transcription failed.");
             }
         };
 
@@ -177,24 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return data.text;
     }
 
-
-    // --- PIPELINE: TRANSLATE -> TTS ---
-    async function processPipeline(text) {
-        // 1. Translate
-        let translatedText;
-        try {
-            translatedText = await translateText(text, 'es'); // Default to Spanish/English? Or Auto?
-        } catch (e) {
-            console.error("Translation failed", e);
-            translatedText = `(Error) ${text}`;
-        }
-
-        // 2. Display with typing effect? or just append
-        addMessage(translatedText, 'receiver');
-
-        // 3. TTS
-        await speakText(translatedText, voiceSelect.value);
-    }
 
     async function translateText(text, targetLang = 'es') {
         // Logic: OpenAI -> Google
@@ -261,18 +553,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function sendTTSRequest(socket, text, voiceId) {
-        // Map UI values to real Cartesia IDs
-        const VOICE_MAP = {
-            'sonic-english': '79a125e8-cd45-4c13-8a67-188112f4dd22',
-            'barbershop-man': 'a0e99878-f023-447a-9768-5f98829c4f57'
-        };
-        const realId = VOICE_MAP[voiceId] || VOICE_MAP['sonic-english'];
+        // User requested specific configuration
+        const selectedVoiceId = voiceId || "005af375-5aad-4c02-9551-7fc411430542"; // Use selected or default
+        const selectedLang = languageSelect.value;
 
         const message = {
-            model_id: "sonic-english",
+            model_id: "sonic-3-latest",
             transcript: text,
-            voice: { mode: "id", id: realId },
-            output_format: { container: "raw", encoding: "pcm_f32le", sample_rate: 44100 }
+            voice: {
+                mode: "id",
+                id: selectedVoiceId
+            },
+            output_format: {
+                container: "raw",
+                encoding: "pcm_f32le",
+                sample_rate: 44100
+            },
+            language: selectedLang,
+            pronunciation_dict_id: "pdict_nyWBBphhMbxQmpmccYdMUy",
+            generation_config: {
+                speed: 1.0,
+                volume: 1.0,
+                emotion: ["happy", "content"] // Attempting to match requested emotion
+            }
         };
         socket.send(JSON.stringify(message));
     }
@@ -295,10 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
             bytes[i] = binaryString.charCodeAt(i);
         }
 
-        // Raw PCM handling is complex without a scheduler. 
-        // For this demo, we can just log success or try a simple buffer play (which will gap).
-        // A real impl needs an AudioWorklet or scheduled source nodes.
-
         // Simple distinct buffer play for verification:
         const float32 = new Float32Array(bytes.buffer);
         const buffer = audioContext.createBuffer(1, float32.length, 44100);
@@ -309,38 +608,43 @@ document.addEventListener('DOMContentLoaded', () => {
         source.connect(audioContext.destination);
         source.start();
     }
-
-
-    // --- UI HELPER ---
-    function addMessage(text, type) {
-        const isSender = type === 'sender';
-        const containerDiv = document.createElement('div');
-        containerDiv.classList.add(isSender ? 'senderContainer' : 'receiverContainer', 'arrowm');
-
-        const bubbleWrapper = document.createElement('div');
-        bubbleWrapper.classList.add(isSender ? 'sender' : 'reciver', 'mepop');
-
-        const replyDiv = document.createElement('div');
-        replyDiv.classList.add('thereply');
-
-        const p = document.createElement('p');
-        p.textContent = text;
-
-        const timeDiv = document.createElement('div');
-        timeDiv.classList.add('time');
-
-        const arrowHover = document.createElement('div');
-        arrowHover.classList.add('arrowhover', isSender ? 'arrowG' : 'arrowW');
-        const arrowImg = document.createElement('img');
-        arrowImg.src = "./img/icons8-expand-arrow-96.png";
-        arrowHover.appendChild(arrowImg);
-
-        replyDiv.appendChild(p);
-        replyDiv.appendChild(timeDiv);
-        replyDiv.appendChild(arrowHover);
-        bubbleWrapper.appendChild(replyDiv);
-        containerDiv.appendChild(bubbleWrapper);
-        chatContainer.appendChild(containerDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
 });
+
+// Helper for Visualizer (Must be outside)
+function visualize(analyser, canvas) {
+    const canvasCtx = canvas.getContext("2d");
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    function draw() {
+        if (canvas.style.display === 'none') {
+            // Stop loop if hidden
+            return;
+        }
+
+        requestAnimationFrame(draw);
+
+        analyser.getByteFrequencyData(dataArray);
+
+        canvasCtx.fillStyle = "rgb(0, 0, 0)"; // or transparent?
+        // Match button color roughly or transparent
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw pulsing circle or bars
+        // Simple Bars for now
+        const barWidth = (canvas.width / bufferLength) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i] / 2;
+
+            // Red color to match mic
+            canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
+            canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+
+            x += barWidth + 1;
+        }
+    }
+    draw();
+}
