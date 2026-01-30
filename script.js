@@ -20,6 +20,7 @@ const KEYS = {
 };
 
 import { LANGUAGES } from './languages.js';
+import { PRESET_VOICES } from './voices.js';
 
 // --- INITIALIZATION ---
 let app;
@@ -56,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 0. INIT CALLS ---
     populateLanguages();
-    fetchCartesiaVoices();
+    populateLanguages();
+    populateVoiceList();
     setupExitButton();
 
     // --- 1. LANGUAGE POPULATION ---
