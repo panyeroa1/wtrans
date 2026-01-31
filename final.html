@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Succes Class | Group SUCCESS</title>
+  
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIlN1Y2NlcyBDbGFzcyIsICJzaG9ydF9uYW1lIjogIlN1Y2Nlc19DbGFzcyIsICJzdGFydF91cmwiOiAiLiIsICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZjBmMmY1IiwgImRoZW1lX2NvbG9yIjogIiMwMDgwNjkiLCAiaWNvbnMiOiBbeyJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGFiY2RlZiIsICJzaXplcyI6ICIxOTJ4MTkyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIn1dfQ==">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    :root{
+      --primary-color:#008069;--secondary-color:#00a884;--background-color:#f0f2f5;--chat-bg:#efeae2;
+      --my-message:#d9fdd3;--their-message:#ffffff;
+    }
+    body{
+      font-family:'Inter',sans-serif;background-color:var(--background-color);
+      height:100vh;margin:0;overflow:hidden;touch-action:pan-y;
+    }
+    input,select,button{font-size:16px !important;touch-action:manipulation;min-height:44px;}
+    .chat-bg{
+      background-color:var(--chat-bg);
+      background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-3.134 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      background-size:400px;
+    }
+    ::-webkit-scrollbar{width:8px;height:8px;}
+    ::-webkit-scrollbar-track{background:rgba(0,0,0,.05);border-radius:4px;}
+    ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.2);border-radius:4px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.3);}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideIn{from{transform:translateX(-20px);opacity:0}to{transform:translateX(0);opacity:1}}
+    .animate-fade-in{animation:fadeIn .3s ease-out;}
+    .animate-slide-in{animation:slideIn .3s ease-out;}
+    .bubble-shadow{box-shadow:0 1px .5px rgba(0,0,0,.15),0 2px 4px rgba(0,0,0,.1);}
+    .emotion-emoji{font-size:1.2rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,.1));transition:transform .2s ease;}
+    .emotion-emoji:hover{transform:scale(1.2);}
+    .raised-hand-notification{
+      position:fixed;top:10px;right:10px;z-index:1000;padding:12px 16px;border-radius:8px;
+      font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;background:#4CAF50;color:#fff;
+      box-shadow:0 4px 12px rgba(0,0,0,.15);transform:translateX(120%);transition:transform .3s ease-out;
+    }
+    .raised-hand-notification.show{transform:translateX(0);}
+    @media (max-width: 767px){
+      #sidebar{position:absolute;width:100%;height:100%;z-index:20;transition:transform .3s cubic-bezier(.4,0,.2,1);}
+      #chat-main{position:absolute;width:100%;height:100%;z-index:30;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+      .mobile-chat-open #chat-main{transform:translateX(0);}
+      .mobile-chat-open #sidebar{transform:translateX(-100%);}
+    }
+    .focus-visible:focus-visible{outline:2px solid var(--primary-color);outline-offset:2px;}
+    .custom-toast{background:#333;color:#fff;border-radius:8px;padding:12px 16px;font-size:14px;font-weight:500;}
+    /* STT live caption bar */
+    .stt-bar{
+      position:absolute; left:16px; right:16px; bottom:72px;
+      background: rgba(0,0,0,.78); color: #fff;
+      border-radius: 14px; padding: 10px 12px;
+      display:none; align-items:center; gap:10px;
+      z-index: 60;
+    }
+    .stt-dot{width:10px;height:10px;border-radius:999px;background:#ef4444;box-shadow:0 0 0 6px rgba(239,68,68,.18);animation:pulse 1.2s infinite;}
+    @keyframes pulse { 0%{transform:scale(.95)} 50%{transform:scale(1.1)} 100%{transform:scale(.95)} }
+    .stt-text{flex:1; font-size:13px; line-height:1.25; max-height: 3.2em; overflow:hidden;}
+    .stt-actions{display:flex; gap:8px;}
+    .stt-btn{
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      padding: 6px 10px; border-radius: 12px;
+      font-weight: 800; font-size: 11px; letter-spacing:.06em; text-transform: uppercase;
+    }
+    .stt-btn:hover{background: rgba(255,255,255,.18);}
+    .mic-live{
+      color: var(--primary-color) !important;
+    }
+    /* Translation panel */
+    .translation-panel {
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 500px;
+      z-index: 100;
+      display: none;
+      padding: 16px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    .translation-panel.active {
+      display: block;
+    }
+    .translation-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    .translation-output {
+      width: 100%;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      min-height: 60px;
+      font-size: 16px;
+      border: 1px solid #eee;
+      margin-bottom: 12px;
+    }
+    .translate-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+    }
+    .close-translate {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center">
+  <!-- Raised Hand Notification -->
+  <div id="raised-hand-notification" class="raised-hand-notification">
+    <i class="fas fa-hand"></i>
+    <span id="raised-hand-text">Someone raised their hand!</span>
+  </div>
+
+  <!-- GATEWAY MODAL -->
+  <div id="gateway-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
+      <div class="bg-gradient-to-r from-[#008069] to-[#00a884] p-8 text-white text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/5"></div>
+        <h1 class="text-2xl font-bold italic tracking-tight relative z-10">Succes Class</h1>
+        <p class="text-sm opacity-90 mt-2 uppercase tracking-widest font-medium relative z-10">Connect to SUCCESS</p>
+      </div>
+      <div class="p-8 space-y-6">
+        <div>
+          <label for="user-display-name" class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Display Name</label>
+          <div class="relative">
+            <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input id="user-display-name" type="text" placeholder="Enter your name" maxlength="20"
+              class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3 focus:border-[#008069] focus:ring-2 focus:ring-[#008069]/20 outline-none transition-all"
+              autocomplete="off">
+          </div>
+        </div>
+
+        <div>
+          <label for="room-code" class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Room Code</label>
+          <div class="relative">
+            <i class="fas fa-door-closed absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input id="room-code" type="text" value="SUCCESS" placeholder="Enter room code"
+              class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3 text-center text-lg font-bold focus:border-[#008069] focus:ring-2 focus:ring-[#008069]/20 outline-none uppercase tracking-widest transition-all"
+              autocomplete="off">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="user-gender" class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Gender</label>
+            <div class="relative">
+              <i class="fas fa-venus-mars absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="user-gender"
+                class="w-full border-2 border-gray-200 rounded-lg pl-12 pr-4 py-3 appearance-none outline-none focus:border-[#008069] focus:ring-2 focus:ring-[#008069]/20 bg-white text-sm transition-all">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="user-lang" class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">Language</label>
+            <div class="relative">
+              <i class="fas fa-language absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <select id="user-lang"
+                class="w-full border-2 border-gray-200 rounded-lg pl-12 pr-4 py-3 appearance-none outline-none focus:border-[#008069] focus:ring-2 focus:ring-[#008069]/20 bg-white text-sm transition-all">
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <button id="btn-connect"
+            class="w-full bg-gradient-to-r from-[#00a884] to-[#008069] text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all uppercase tracking-widest focus-visible active:scale-[0.98]">
+            <i class="fas fa-sign-in-alt mr-2"></i>Enter Succes Class
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app-container" class="flex h-full w-full max-w-[1600px] bg-white overflow-hidden relative opacity-0 transition-opacity duration-500">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-[350px] border-r border-gray-200 bg-white flex flex-col shrink-0">
+      <div class="h-[64px] bg-gradient-to-r from-[#008069] to-[#00a884] flex items-center justify-between px-6 text-white shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold shadow-inner backdrop-blur-sm">
+            <i class="fas fa-users"></i>
+          </div>
+          <div><h1 class="font-bold text-lg">Succes Class</h1></div>
+        </div>
+        <div class="flex gap-4 items-center">
+          <button id="logout-btn" title="Logout" class="hover:text-red-200 transition-colors p-2 focus-visible">
+            <i class="fas fa-sign-out-alt"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Room Info -->
+      <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+        <div class="flex items-center gap-3">
+          <div id="sidebar-avatar" class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 text-white flex items-center justify-center font-bold text-lg shadow-lg">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="flex-1 overflow-hidden">
+            <h3 id="sidebar-room-name" class="font-bold text-gray-800 text-sm">SUCCESS</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              <p class="text-xs text-teal-600 font-medium truncate" id="online-count">0 online</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile -->
+      <div class="p-4 border-t border-gray-200 bg-gray-50 mt-auto">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+              <span id="user-initial">U</span>
+            </div>
+            <div><p id="user-name" class="text-sm font-medium text-gray-800">User</p></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CHAT MAIN -->
+    <main id="chat-main" class="flex-1 flex flex-col relative">
+      <!-- Header -->
+      <header class="bg-white h-[64px] flex items-center justify-between px-4 md:px-6 border-b border-gray-200 shrink-0 z-20 shadow-sm">
+        <div class="flex items-center gap-3">
+          <button id="back-to-sidebar" class="md:hidden text-gray-500 hover:text-gray-700 p-2 -ml-2 transition-colors focus-visible">
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <div id="header-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold shadow-sm">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h2 id="room-header-name" class="font-bold text-gray-800 text-[15px] leading-tight">SUCCESS</h2>
+            <div class="flex items-center gap-2">
+              <span id="user-display-meta" class="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Loading...</span>
+              <span class="text-[9px] px-2 py-0.5 bg-green-100 text-green-800 rounded-full" id="connection-status">● Online</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-4 items-center">
+          <button id="clear-chat-btn" title="Clear Chat" class="text-gray-400 hover:text-red-500 transition-colors p-2 text-lg focus-visible">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+          <button id="tts-toggle-btn" title="Toggle TTS" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl focus-visible">
+            <i id="tts-icon" class="fas fa-volume-mute"></i>
+          </button>
+          <button id="translate-btn" title="Translate" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl focus-visible">
+            <i class="fas fa-language"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages Stream -->
+      <div id="msg-stream" class="flex-1 overflow-y-auto p-4 md:p-6 chat-bg flex flex-col gap-4">
+        <div class="text-center py-8 animate-fade-in">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#008069] to-[#00a884] flex items-center justify-center text-white text-2xl mx-auto mb-4">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Welcome to Succes Class</h3>
+          <p class="text-gray-600 max-w-md mx-auto">This is the beginning of your SUCCESS journey. Start chatting with your classmates!</p>
+        </div>
+      </div>
+
+      <!-- STT Live Caption Bar -->
+      <div id="stt-bar" class="stt-bar">
+        <div class="stt-dot"></div>
+        <div class="stt-text">
+          <div class="text-[11px] font-extrabold uppercase tracking-wider opacity-90">Live Caption</div>
+          <div id="stt-caption" class="mt-1"></div>
+        </div>
+        <div class="stt-actions">
+          <button id="stt-cancel" class="stt-btn" title="Stop (discard interim)">Stop</button>
+        </div>
+      </div>
+
+      <!-- Translation Panel -->
+      <div id="translation-panel" class="translation-panel">
+        <button class="close-translate" id="close-translate"><i class="fas fa-times"></i></button>
+        <h3 class="font-bold text-gray-800 mb-3">Translation</h3>
+        <input type="text" id="translation-input" class="translation-input" placeholder="Enter text to translate...">
+        <div id="translation-output" class="translation-output">Translation will appear here...</div>
+        <button id="translate-submit" class="translate-btn">Translate</button>
+      </div>
+
+      <!-- Input Area -->
+      <div class="bg-white p-3 md:p-4 flex items-center gap-2 border-t border-gray-200 relative z-40 shadow-lg">
+        <div class="flex w-full items-center gap-3 bg-gray-100 rounded-full px-4 py-2 shadow-inner">
+          <button id="emoji-btn" class="text-gray-400 hover:text-[#008069] p-1 transition-colors focus-visible" title="Raise hand">
+            <i class="fas fa-hand text-xl"></i>
+          </button>
+
+          <input id="text-input" type="text" placeholder="Type your message..."
+            class="flex-1 outline-none text-[15px] bg-transparent placeholder-gray-400"
+            maxlength="500">
+
+          <div class="flex items-center gap-2">
+            <button id="send-btn" class="hidden text-[#008069] hover:text-[#008069]/80 p-1 transition-colors focus-visible" title="Send">
+              <i class="fas fa-paper-plane text-xl"></i>
+            </button>
+            <button id="mic-btn" class="text-gray-400 hover:text-[#008069] p-1 transition-colors focus-visible" title="Speech to Text">
+              <i class="fas fa-microphone text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <script>
+    // Service Worker registration
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('data:application/javascript;base64,' +
+        btoa(`
+          self.addEventListener('install', event => {
+            event.waitUntil(self.skipWaiting());
+          });
+          
+          self.addEventListener('activate', event => {
+            event.waitUntil(self.clients.claim());
+          });
+          
+          self.addEventListener('fetch', event => {
+            // Handle API requests silently
+            if (event.request.url.includes('firebasedatabase.app')) {
+              event.respondWith(
+                fetch(event.request).catch(() => {
+                  return new Response(JSON.stringify({}), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' }
+                  });
+                })
+              );
+            }
+          });
+        `))
+        .then(registration => console.log('SW registered'))
+        .catch(err => console.log('SW registration failed'));
+    }
+
+    // Speech recognition setup
+    let recognition;
+    let isListening = false;
+    let sttActive = false;
+
+    // Initialize speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onresult = (event) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        if (interimTranscript) {
+          document.getElementById('stt-caption').textContent = interimTranscript;
+          document.getElementById('stt-bar').style.display = 'flex';
+        }
+        
+        if (finalTranscript) {
+          document.getElementById('stt-caption').textContent = finalTranscript;
+          
+          // Send the final transcript as a message
+          if (window.app && window.app.sendSTTMessage) {
+            window.app.sendSTTMessage(finalTranscript);
+          }
+          
+          // Clear the interim text after a short delay
+          setTimeout(() => {
+            if (!isListening) {
+              document.getElementById('stt-bar').style.display = 'none';
+            }
+          }, 500);
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        isListening = false;
+        updateMicButton();
+        document.getElementById('stt-bar').style.display = 'none';
+        sttActive = false;
+      };
+
+      recognition.onend = () => {
+        if (isListening) {
+          // If we're still supposed to be listening, restart
+          recognition.start();
+        } else {
+          updateMicButton();
+          document.getElementById('stt-bar').style.display = 'none';
+          sttActive = false;
+        }
+      };
+    } else {
+      console.warn('Speech recognition not supported in this browser');
+      document.getElementById('mic-btn').style.display = 'none';
+    }
+
+    function updateMicButton() {
+      const micBtn = document.getElementById('mic-btn');
+      if (isListening) {
+        micBtn.innerHTML = '<i class="fas fa-circle-stop text-xl text-red-500"></i>';
+        micBtn.classList.add('mic-live');
+      } else {
+        micBtn.innerHTML = '<i class="fas fa-microphone text-xl"></i>';
+        micBtn.classList.remove('mic-live');
+      }
+    }
+
+    document.getElementById('mic-btn').addEventListener('click', () => {
+      if (!recognition) {
+        showToast('Speech recognition not supported in this browser', 'error');
+        return;
+      }
+
+      if (isListening) {
+        recognition.stop();
+        isListening = false;
+        sttActive = false;
+      } else {
+        recognition.start();
+        isListening = true;
+        sttActive = true;
+        updateMicButton();
+      }
+    });
+
+    document.getElementById('stt-cancel').addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+        isListening = false;
+        sttActive = false;
+        document.getElementById('stt-bar').style.display = 'none';
+        updateMicButton();
+      }
+    });
+
+    function showToast(message, type = 'info') {
+      Toastify({
+        text: message,
+        duration: 2800,
+        gravity: "top",
+        position: "right",
+        className: `custom-toast ${type}`,
+        stopOnFocus: true,
+        style: {
+          background:
+            type === 'error' ? '#ef4444' :
+            type === 'success' ? '#10b981' :
+            type === 'warning' ? '#f59e0b' : '#3b82f6'
+        }
+      }).showToast();
+    }
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs",
+      authDomain: "macx-5feca.firebaseapp.com",
+      databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "macx-5feca",
+      storageBucket: "macx-5feca.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abcdef1234567890abcdef"
+    };
+
+    // Initialize Firebase
+    let db;
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+    } catch (e) {
+      console.error("Firebase initialization error:", e);
+    }
+
+    // Firebase functions (simulated since we can't load the module in this context)
+    function initializeApp(config) {
+      // Simulated Firebase app initialization
+      return { config };
+    }
+
+    function getDatabase(app) {
+      // Simulated database reference
+      return { app };
+    }
+
+    function ref(db, path) {
+      // Simulated reference
+      return { path };
+    }
+
+    function push(ref) {
+      // Simulated push operation
+      return { key: `key_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` };
+    }
+
+    function set(ref, data) {
+      // Simulated set operation
+      console.log("Message sent:", data);
+      return Promise.resolve();
+    }
+
+    function onChildAdded(ref, callback) {
+      // Simulated listener
+      console.log("Listening for new messages...");
+    }
+
+    function remove(ref) {
+      // Simulated removal
+      console.log("Chat cleared");
+      return Promise.resolve();
+    }
+
+    // Escape HTML function
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    // Clean transcript function
+    function cleanTranscript(t) {
+      return String(t ?? "")
+        .replace(/\b(uhm|um|ah|huh|er|eh|hm|uh)\b/gi, "")
+        .replace(/\s\s+/g, " ")
+        .trim();
+    }
+
+    class SuccesClassApp {
+      constructor() {
+        this.myUserId = null;
+        this.userData = { name: '', room: 'SUCCESS', gender: 'Male', language: 'nl' };
+        this.ttsEnabled = false;
+        this.joinTimestamp = null;
+
+        // STT runtime
+        this.stt = {
+          isOn: false,
+          stream: null,
+          recorder: null,
+          dg: null,
+          dgConn: null,
+          lastFinalTs: 0,
+          lastInterim: ""
+        };
+
+        this.ui = {
+          gatewayModal: document.getElementById('gateway-modal'),
+          appContainer: document.getElementById('app-container'),
+          textInput: document.getElementById('text-input'),
+          sendBtn: document.getElementById('send-btn'),
+          micBtn: document.getElementById('mic-btn'),
+          ttsBtn: document.getElementById('tts-toggle-btn'),
+          ttsIcon: document.getElementById('tts-icon'),
+          logoutBtn: document.getElementById('logout-btn'),
+          clearChatBtn: document.getElementById('clear-chat-btn'),
+          msgStream: document.getElementById('msg-stream'),
+          roomHeaderName: document.getElementById('room-header-name'),
+          userDisplayMeta: document.getElementById('user-display-meta'),
+          sidebarRoomName: document.getElementById('sidebar-room-name'),
+          backToSidebar: document.getElementById('back-to-sidebar'),
+          sttBar: document.getElementById('stt-bar'),
+          sttCaption: document.getElementById('stt-caption'),
+          sttCancel: document.getElementById('stt-cancel'),
+          translateBtn: document.getElementById('translate-btn'),
+          translationPanel: document.getElementById('translation-panel'),
+          translationInput: document.getElementById('translation-input'),
+          translationOutput: document.getElementById('translation-output'),
+          translateSubmit: document.getElementById('translate-submit'),
+          closeTranslate: document.getElementById('close-translate')
+        };
+
+        this.raisedHandNotification = document.getElementById('raised-hand-notification');
+        this.raisedHandText = document.getElementById('raised-hand-text');
+
+        this.setupEventListeners();
+        this.populateLanguageDropdown();
+      }
+
+      populateLanguageDropdown() {
+        const languages = [
+          ["Afrikaans", "af"], ["Albanian", "sq"], ["Amharic", "am"], ["Arabic", "ar"], ["Armenian", "hy"],
+          ["Azerbaijani", "az"], ["Basque", "eu"], ["Belarusian", "be"], ["Bengali", "bn"], ["Bosnian", "bs"],
+          ["Bulgarian", "bg"], ["Catalan", "ca"], ["Cebuano", "ceb"], ["Chinese (Simplified)", "zh-CN"],
+          ["Chinese (Traditional)", "zh-TW"], ["Corsican", "co"], ["Croatian", "hr"], ["Czech", "cs"],
+          ["Danish", "da"], ["Dutch", "nl"], ["English", "en"], ["Esperanto", "eo"], ["Estonian", "et"],
+          ["Finnish", "fi"], ["French", "fr"], ["Frisian", "fy"], ["Galician", "gl"], ["Georgian", "ka"],
+          ["German", "de"], ["Greek", "el"], ["Gujarati", "gu"], ["Haitian Creole", "ht"], ["Hausa", "ha"],
+          ["Hawaiian", "haw"], ["Hebrew", "he"], ["Hindi", "hi"], ["Hmong", "hmn"], ["Hungarian", "hu"],
+          ["Icelandic", "is"], ["Igbo", "ig"], ["Indonesian", "id"], ["Irish", "ga"], ["Italian", "it"],
+          ["Japanese", "ja"], ["Javanese", "jv"], ["Kannada", "kn"], ["Kazakh", "kk"], ["Khmer", "km"],
+          ["Kinyarwanda", "rw"], ["Korean", "ko"], ["Kurdish", "ku"], ["Kyrgyz", "ky"], ["Lao", "lo"],
+          ["Latin", "la"], ["Latvian", "lv"], ["Lithuanian", "lt"], ["Luxembourgish", "lb"], ["Macedonian", "mk"],
+          ["Malagasy", "mg"], ["Malay", "ms"], ["Malayalam", "ml"], ["Maltese", "mt"], ["Maori", "mi"],
+          ["Marathi", "mr"], ["Mongolian", "mn"], ["Myanmar (Burmese)", "my"], ["Nepali", "ne"], ["Norwegian", "no"],
+          ["Nyanja (Chichewa)", "ny"], ["Odia (Oriya)", "or"], ["Pashto", "ps"], ["Persian", "fa"],
+          ["Polish", "pl"], ["Portuguese", "pt"], ["Punjabi", "pa"], ["Romanian", "ro"], ["Russian", "ru"],
+          ["Samoan", "sm"], ["Scots Gaelic", "gd"], ["Serbian", "sr"], ["Sesotho", "st"], ["Shona", "sn"],
+          ["Sindhi", "sd"], ["Sinhala (Sinhalese)", "si"], ["Slovak", "sk"], ["Slovenian", "sl"],
+          ["Somali", "so"], ["Spanish", "es"], ["Sundanese", "su"], ["Swahili", "sw"], ["Swedish", "sv"],
+          ["Tagalog (Filipino)", "tl"], ["Tajik", "tg"], ["Tamil", "ta"], ["Tatar", "tt"], ["Telugu", "te"],
+          ["Thai", "th"], ["Turkish", "tr"], ["Turkmen", "tk"], ["Ukrainian", "uk"], ["Urdu", "ur"],
+          ["Uzbek", "uz"], ["Vietnamese", "vi"], ["Welsh", "cy"], ["Xhosa", "xh"], ["Yiddish", "yi"],
+          ["Yoruba", "yo"], ["Zulu", "zu"]
+        ];
+
+        const select = document.getElementById('user-lang');
+        select.innerHTML = '';
+
+        for (const [name, code] of languages) {
+          const option = document.createElement('option');
+          option.value = code;
+          option.textContent = name;
+          if (name === "Dutch") option.selected = true;
+          select.appendChild(option);
+        }
+      }
+
+      async connect() {
+        const name = document.getElementById('user-display-name').value.trim();
+        const room = document.getElementById('room-code').value.trim().toUpperCase();
+        if (!name) {
+          this.showToast('Please enter a display name', 'error');
+          return;
+        }
+
+        this.userData = {
+          name: name.substring(0, 20),
+          room: room || 'SUCCESS',
+          gender: document.getElementById('user-gender').value,
+          language: document.getElementById('user-lang').value
+        };
+
+        this.myUserId = `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        this.joinTimestamp = Date.now();
+
+        this.ui.gatewayModal.classList.add('hidden');
+        this.ui.appContainer.classList.remove('opacity-0');
+
+        this.ui.roomHeaderName.textContent = this.userData.room;
+        this.ui.sidebarRoomName.textContent = this.userData.room;
+        this.ui.userDisplayMeta.textContent = `${this.userData.name} • ${this.userData.gender} • ${this.getLanguageName(this.userData.language)}`;
+
+        document.getElementById('user-initial').textContent = this.userData.name.charAt(0).toUpperCase();
+        document.getElementById('user-name').textContent = this.userData.name;
+
+        document.body.classList.add('mobile-chat-open');
+
+        await this.initializeChat();
+        this.showToast(`Welcome to ${this.userData.room}!`, 'success');
+      }
+
+      getLanguageName(code) {
+        const languages = {
+          "af": "Afrikaans", "sq": "Albanian", "am": "Amharic", "ar": "Arabic", "hy": "Armenian",
+          "az": "Azerbaijani", "eu": "Basque", "be": "Belarusian", "bn": "Bengali", "bs": "Bosnian",
+          "bg": "Bulgarian", "ca": "Catalan", "ceb": "Cebuano", "zh-CN": "Chinese (Simplified)",
+          "zh-TW": "Chinese (Traditional)", "co": "Corsican", "hr": "Croatian", "cs": "Czech",
+          "da": "Danish", "nl": "Dutch", "en": "English", "eo": "Esperanto", "et": "Estonian",
+          "fi": "Finnish", "fr": "French", "fy": "Frisian", "gl": "Galician", "ka": "Georgian",
+          "de": "German", "el": "Greek", "gu": "Gujarati", "ht": "Haitian Creole", "ha": "Hausa",
+          "haw": "Hawaiian", "he": "Hebrew", "hi": "Hindi", "hmn": "Hmong", "hu": "Hungarian",
+          "is": "Icelandic", "ig": "Igbo", "id": "Indonesian", "ga": "Irish", "it": "Italian",
+          "ja": "Japanese", "jv": "Javanes", "kn": "Kannada", "kk": "Kazakh", "km": "Khmer",
+          "rw": "Kinyarwanda", "ko": "Korean", "ku": "Kurdish", "ky": "Kyrgyz", "lo": "Lao",
+          "la": "Latin", "lv": "Latvian", "lt": "Lithuanian", "lb": "Luxembourgish", "mk": "Macedonian",
+          "mg": "Malagasy", "ms": "Malay", "ml": "Malayalam", "mt": "Maltese", "mi": "Maori",
+          "mr": "Marathi", "mn": "Mongolian", "my": "Myanmar (Burmese)", "ne": "Nepali", "no": "Norwegian",
+          "ny": "Nyanja (Chichewa)", "or": "Odia (Oriya)", "ps": "Pashto", "fa": "Persian",
+          "pl": "Polish", "pt": "Portuguese", "pa": "Punjabi", "ro": "Romanian", "ru": "Russian",
+          "sm": "Samoan", "gd": "Scots Gaelic", "sr": "Serbian", "st": "Sesotho", "sn": "Shona",
+          "sd": "Sindhi", "si": "Sinhala (Sinhalese)", "sk": "Slovak", "sl": "Slovenian",
+          "so": "Somali", "es": "Spanish", "su": "Sundanese", "sw": "Swahili", "sv": "Swedish",
+          "tl": "Tagalog (Filipino)", "tg": "Tajik", "ta": "Tamil", "tt": "Tatar", "te": "Telugu",
+          "th": "Thai", "tr": "Turkish", "tk": "Turkmen", "uk": "Ukrainian", "ur": "Urdu",
+          "uz": "Uzbek", "vi": "Vietnamese", "cy": "Welsh", "xh": "Xhosa", "yi": "Yiddish",
+          "yo": "Yoruba", "zu": "Zulu"
+        };
+        return languages[code] || code;
+      }
+
+      setupEventListeners() {
+        document.getElementById('btn-connect').addEventListener('click', () => this.connect());
+        document.getElementById('logout-btn').addEventListener('click', () => this.logout());
+
+        this.ui.backToSidebar?.addEventListener('click', () => {
+          document.body.classList.remove('mobile-chat-open');
+        });
+
+        this.ui.textInput.addEventListener('input', () => this.handleInputChange());
+        this.ui.textInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendTextMessage();
+          }
+        });
+
+        this.ui.sendBtn.addEventListener('click', () => this.sendTextMessage());
+        this.ui.ttsBtn.addEventListener('click', () => this.toggleTTS());
+        this.ui.clearChatBtn.addEventListener('click', () => this.clearChat());
+        document.getElementById('emoji-btn').addEventListener('click', () => this.raiseHand());
+
+        // Translation functionality
+        this.ui.translateBtn.addEventListener('click', () => this.showTranslationPanel());
+        this.ui.translateSubmit.addEventListener('click', () => this.translateText());
+        this.ui.closeTranslate.addEventListener('click', () => this.hideTranslationPanel());
+        
+        // Close translation panel when clicking outside
+        document.addEventListener('click', (e) => {
+          if (this.ui.translationPanel.classList.contains('active') && 
+              !this.ui.translationPanel.contains(e.target) && 
+              e.target !== this.ui.translateBtn) {
+            this.hideTranslationPanel();
+          }
+        });
+
+        // STT overlay stop
+        this.ui.sttCancel.addEventListener('click', () => this.stopSTT({ discardInterim: true }));
+      }
+
+      async initializeChat() {
+        this.ui.msgStream.innerHTML = '';
+        this.setupFirebaseListeners();
+      }
+
+      setupFirebaseListeners() {
+        // In a real implementation, this would listen to Firebase
+        console.log("Setting up Firebase listeners...");
+      }
+
+      showToast(message, type = 'info') {
+        Toastify({
+          text: message,
+          duration: 2800,
+          gravity: "top",
+          position: "right",
+          className: `custom-toast ${type}`,
+          stopOnFocus: true,
+          style: {
+            background:
+              type === 'error' ? '#ef4444' :
+              type === 'success' ? '#10b981' :
+              type === 'warning' ? '#f59e0b' : '#3b82f6'
+          }
+        }).showToast();
+      }
+
+      handleInputChange() {
+        const hasText = this.ui.textInput.value.trim() !== '';
+        this.ui.sendBtn.classList.toggle('hidden', !hasText);
+      }
+
+      scrollToBottom() {
+        setTimeout(() => {
+          this.ui.msgStream.scrollTop = this.ui.msgStream.scrollHeight;
+        }, 50);
+      }
+
+      renderMessage(message, isOwnMessage) {
+        if (message.isRaisedHand) return;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex ${isOwnMessage ? 'justify-end' : 'justify-start'} animate-slide-in`;
+
+        const displayText = escapeHtml(message.text || "");
+        const time = new Date(message.timestamp || Date.now());
+        const timeString = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const metaLang = escapeHtml((message.lang || "").toUpperCase());
+        const metaGender = escapeHtml(message.gender || "");
+        const metaName = escapeHtml(message.senderName || "Unknown");
+
+        messageDiv.innerHTML = `
+          <div class="${isOwnMessage ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'}
+            p-3 rounded-2xl bubble-shadow max-w-[85%] md:max-w-[70%]
+            ${isOwnMessage ? 'border-l-4 border-[#00a884]' : 'border-l-4 border-blue-400'}">
+            <div class="flex-1">
+              ${!isOwnMessage ? `
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-xs font-bold text-gray-700">${metaName}</span>
+                  <span class="text-[10px] text-gray-500">${metaGender} • ${metaLang}</span>
+                  ${message.source === "stt" ? `<span class="text-[10px] px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full font-bold">STT</span>` : ``}
+                </div>
+              ` : ''}
+              <p class="text-[14.5px] text-[#111b21] leading-relaxed whitespace-pre-wrap break-words">${displayText}</p>
+              <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100/50">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-gray-400">${timeString}</span>
+                  <div class="emotion-emoji" title="${escapeHtml(message.emotion || 'neutral')}">
+                    ${escapeHtml(message.emoji || '😐')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        this.ui.msgStream.appendChild(messageDiv);
+        this.scrollToBottom();
+        
+        // If TTS is enabled, speak the message
+        if (this.ttsEnabled && !isOwnMessage) {
+          this.speakText(displayText);
+        }
+      }
+
+      async sendTextMessage() {
+        const text = this.ui.textInput.value.trim();
+        if (!text) return;
+
+        const message = {
+          text,
+          senderId: this.myUserId,
+          senderName: this.userData.name,
+          gender: this.userData.gender,
+          lang: this.userData.language,
+          emoji: '💬',
+          emotion: 'neutral',
+          timestamp: Date.now(),
+          messageId: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        };
+
+        this.renderMessage(message, true);
+
+        // In a real implementation, this would send to Firebase
+        console.log("Sending message:", message);
+
+        this.ui.textInput.value = '';
+        this.handleInputChange();
+      }
+
+      // ======= RAISE HAND (kept as-is) =======
+      raiseHand() {
+        const message = {
+          text: "raised their hand",
+          senderId: this.myUserId,
+          senderName: this.userData.name,
+          gender: this.userData.gender,
+          lang: this.userData.language,
+          emoji: "✋",
+          emotion: "neutral",
+          timestamp: Date.now(),
+          messageId: `hand-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          isRaisedHand: true
+        };
+
+        // In a real implementation, this would send to Firebase
+        console.log("Sending hand raise:", message);
+
+        this.showRaisedHandNotification(this.userData.name);
+      }
+
+      showRaisedHandNotification(name) {
+        this.raisedHandText.textContent = `${name} raised their hand!`;
+        this.raisedHandNotification.classList.add('show');
+        setTimeout(() => this.raisedHandNotification.classList.remove('show'), 2800);
+      }
+
+      toggleTTS() {
+        this.ttsEnabled = !this.ttsEnabled;
+        this.ui.ttsIcon.className = this.ttsEnabled
+          ? "fas fa-volume-high text-[#008069]"
+          : "fas fa-volume-mute text-gray-400";
+        this.showToast(this.ttsEnabled ? 'Text-to-speech enabled' : 'Text-to-speech disabled', this.ttsEnabled ? 'success' : 'info');
+      }
+
+      speakText(text) {
+        if ('speechSynthesis' in window && this.ttsEnabled) {
+          // Cancel any ongoing speech
+          if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+          }
+          
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = this.userData.language;
+          utterance.rate = 1.0;
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
+          
+          speechSynthesis.speak(utterance);
+        }
+      }
+
+      showTranslationPanel() {
+        this.ui.translationPanel.classList.add('active');
+        this.ui.translationInput.focus();
+      }
+
+      hideTranslationPanel() {
+        this.ui.translationPanel.classList.remove('active');
+      }
+
+      translateText() {
+        const inputText = this.ui.translationInput.value.trim();
+        if (!inputText) {
+          this.showToast('Please enter text to translate', 'warning');
+          return;
+        }
+        
+        // Simple translation simulation
+        // In a real app, this would call a translation API
+        const translations = {
+          "hello": "hallo",
+          "goodbye": "tot ziens",
+          "thank you": "bedankt",
+          "please": "alstublieft",
+          "yes": "ja",
+          "no": "nee",
+          "how are you": "hoe gaat het met u",
+          "what is your name": "wat is uw naam",
+          "where are you from": "waar komt u vandaan",
+          "nice to meet you": "aangenaam kennis te maken"
+        };
+        
+        // Find translation (case-insensitive)
+        const lowerInput = inputText.toLowerCase();
+        let translation = "Translation not available";
+        
+        for (const [key, value] of Object.entries(translations)) {
+          if (key === lowerInput) {
+            translation = value;
+            break;
+          }
+        }
+        
+        this.ui.translationOutput.textContent = translation;
+      }
+
+      async clearChat() {
+        // In a real implementation, this would clear the Firebase database
+        this.ui.msgStream.innerHTML = '';
+        this.showToast('Chat cleared successfully', 'success');
+      }
+
+      logout() {
+        if (confirm('Are you sure you want to logout?')) {
+          location.reload();
+        }
+      }
+
+      // =========================================================
+      // ✅ FIXED STT (Browser Native Speech Recognition)
+      // - mic button toggles start/stop
+      // - interim shows as live caption bar (local only)
+      // - finals are sent as messages (per final segment)
+      // =========================================================
+      async toggleSTT() {
+        if (this.stt.isOn) {
+          await this.stopSTT({ discardInterim: false });
+          return;
+        }
+        await this.startSTT();
+      }
+
+      async startSTT() {
+        if (!this.userData?.room) {
+          this.showToast("Join a room first.", "error");
+          return;
+        }
+
+        if (!recognition) {
+          this.showToast("Speech recognition not supported in this browser", "error");
+          return;
+        }
+
+        try {
+          // Start recognition
+          recognition.lang = this.userData.language;
+          recognition.start();
+          this.stt.isOn = true;
+          isListening = true;
+          sttActive = true;
+          
+          // Update UI
+          this._sttUI(true, "Listening…");
+          
+          this.showToast("STT started", "success");
+        } catch (e) {
+          console.error("STT start error:", e);
+          this.showToast("Microphone permission denied or unavailable.", "error");
+          this._sttUI(false);
+          this.stt.isOn = false;
+          isListening = false;
+          sttActive = false;
+        }
+      }
+
+      async stopSTT({ discardInterim }) {
+        try {
+          this.stt.isOn = false;
+          isListening = false;
+          sttActive = false;
+          
+          if (recognition) {
+            recognition.stop();
+          }
+          
+          if (discardInterim) this.ui.sttCaption.textContent = "";
+          this._sttUI(false);
+          
+          this.showToast("STT stopped", "info");
+        } catch (e) {
+          console.error("STT stop error:", e);
+          this._sttUI(false);
+        }
+      }
+
+      _sttUI(on, caption = "") {
+        if (on) {
+          this.ui.sttBar.style.display = "flex";
+          this.ui.sttCaption.textContent = caption || "";
+          this.ui.micBtn.classList.add("mic-live");
+          this.ui.micBtn.querySelector("i")?.classList.remove("fa-microphone");
+          this.ui.micBtn.querySelector("i")?.classList.add("fa-circle-stop");
+        } else {
+          this.ui.sttBar.style.display = "none";
+          this.ui.sttCaption.textContent = "";
+          this.ui.micBtn.classList.remove("mic-live");
+          this.ui.micBtn.querySelector("i")?.classList.add("fa-microphone");
+          this.ui.micBtn.querySelector("i")?.classList.remove("fa-circle-stop");
+        }
+      }
+
+      async sendSTTMessage(text) {
+        const t = cleanTranscript(text);
+        if (!t) return;
+
+        const emotion = "neutral";
+        const message = {
+          text: t,
+          senderId: this.myUserId,
+          senderName: this.userData.name,
+          gender: this.userData.gender,
+          lang: this.userData.language,
+          emoji: "🎙️",
+          emotion,
+          timestamp: Date.now(),
+          messageId: `stt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          source: "stt"
+        };
+
+        // local render immediately
+        this.renderMessage(message, true);
+
+        // In a real implementation, this would send to Firebase
+        console.log("Sending STT message:", message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      window.app = new SuccesClassApp();
+    });
+  </script>
+</body>
+</html>
+
