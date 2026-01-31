@@ -33,23 +33,18 @@
             background-size: 400px; 
         }
         
-        /* Mobile Responsive View Logic */
-        @media (max-width: 767px) {
-            #sidebar { position: absolute; width: 100%; height: 100%; z-index: 20; transition: transform 0.3s ease; }
-            #chat-main { position: absolute; width: 100%; height: 100%; z-index: 30; transform: translateX(100%); transition: transform 0.3s ease; }
-            
-            .mobile-chat-open #chat-main { transform: translateX(0); }
-            .mobile-chat-open #sidebar { transform: translateX(-100%); }
-        }
-
-        .bubble-shadow { box-shadow: 0 1px 0.5px rgba(0,0,0,0.15); }
-        .emotion-emoji { font-size: 1.25rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
-        
         /* Message Bubbles */
         .msg-me { background-color: #d9fdd3; align-self: flex-end; border-top-right-radius: 0; }
         .msg-other { background-color: #ffffff; align-self: flex-start; border-top-left-radius: 0; }
         .msg-container-me { justify-content: flex-end; }
         .msg-container-other { justify-content: flex-start; }
+
+        /* Mic Disabled State */
+        .mic-disabled { opacity: 0.4; pointer-events: none; background-color: #ccc !important; color: #666 !important; }
+        
+        /* Status Banner Animation */
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        .banner-enter { animation: slideDown 0.3s ease-out forwards; }
     </style>
 </head>
 <body class="flex items-center justify-center">
@@ -129,11 +124,21 @@
                         <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Active Class Session</p>
                     </div>
                 </div>
+                <!-- Hand Raised List -->
+                <div id="hands-list-container" class="p-3 border-t border-gray-200 hidden">
+                    <h4 class="text-[10px] uppercase font-bold text-gray-500 mb-2">Raised Hands</h4>
+                    <div id="hands-list" class="space-y-2"></div>
+                </div>
             </div>
         </aside>
 
         <!-- CHAT PANEL -->
         <main id="chat-main" class="flex-1 flex flex-col bg-[#efeae2] relative shadow-2xl">
+            <!-- SPEAKER STATUS BANNER -->
+            <div id="speaker-banner" class="absolute top-[64px] left-0 right-0 bg-blue-600 text-white text-xs font-bold p-2 text-center z-30 hidden shadow-md banner-enter">
+                <span id="speaker-text">Someone is speaking...</span>
+            </div>
+
             <header class="bg-[#f0f2f5] h-[64px] flex items-center justify-between px-4 border-b border-gray-200 shrink-0 z-20">
                 <div class="flex items-center gap-3">
                     <button onclick="document.body.classList.remove('mobile-chat-open')" class="md:hidden text-gray-500 p-2 -ml-2"><i class="fa-solid fa-arrow-left"></i></button>
@@ -155,11 +160,18 @@
             <div id="msg-stream" class="flex-1 overflow-y-auto p-4 md:p-8 chat-bg flex flex-col gap-3 scroll-smooth"></div>
 
             <div class="bg-[#f0f2f5] p-2 md:p-3 flex items-center gap-2 border-t border-gray-200 relative z-40">
-                <div class="flex w-full items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm">
+                <div class="flex w-full items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm relative">
+                    <!-- RAISE HAND BUTTON -->
+                    <button id="hand-btn" title="Raise Hand" class="text-gray-400 hover:text-yellow-500 transition-colors mr-1">
+                        <i class="fa-solid fa-hand"></i>
+                    </button>
+
                     <i class="fa-regular fa-face-smile text-gray-400 text-xl cursor-pointer"></i>
                     <input id="text-input" type="text" placeholder="Type a message" class="flex-1 outline-none text-[15px] bg-transparent">
                     <button id="send-btn" class="hidden text-teal-600 p-1"><i class="fa-solid fa-paper-plane text-xl"></i></button>
-                    <button id="mic-btn" class="text-gray-500 p-1"><i class="fa-solid fa-microphone text-xl"></i></button>
+                    
+                    <!-- MIC BUTTON (Disabled when someone speaks) -->
+                    <button id="mic-btn" class="text-gray-500 p-1 transition-all"><i class="fa-solid fa-microphone text-xl"></i></button>
                 </div>
 
                 <div id="voice-overlay" class="absolute inset-0 bg-[#f0f2f5] z-50 flex items-center px-4 hidden">
@@ -181,7 +193,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onChildAdded, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         // DEEPGRAM SDK IMPORT
         import { createClient, LiveTranscriptionEvents } from 'https://cdn.jsdelivr.net/npm/@deepgram/sdk@3/+esm';
 
@@ -189,8 +201,7 @@
         const CARTESIA_KEY = "sk_car_yWEX9Mp2LwKju8FXyosGhj";
         const DEEPGRAM_API_KEY = '789070015592d5df7d8c0282e8d3f392f44410a1';
         
-        // --- DUTCH FLEMISH LEXICON (Embedded from lexicon.json) ---
-        // Used to boost accuracy for these specific terms in NL mode
+        // --- DUTCH FLEMISH LEXICON (Embedded) ---
         const DUTCH_LEXICON_DATA = [
             {"text":"maandag","pronunciation":"<<m|aː|n|d|ɑ|x>>"},
             {"text":"maatregel","pronunciation":"<<m|aː|t|r|eː|ɣ|ə|l>>"},
@@ -243,7 +254,7 @@
             {"text":"noemen","pronunciation":"<<n|u|m|ə|n>>"},
             {"text":"nood","pronunciation":"<<n|oː|t>>"},
             {"text":"nooit","pronunciation":"<<n|oː|i̯|t>>"},
-            {"text":"noorden","pronunciation":"<<n|oː|r|d|ə>>"},
+            {"text":"noorden","pronunciation":"<<n|oː|r|d|eː|l>>"},
             {"text":"normaal","pronunciation":"<<n|ɔ|r|m|aː|l>>"},
             {"text":"nummer","pronunciation":"<<n|ʏ|m|ə|r>>"},
             {"text":"object","pronunciation":"<<ɔ|b|j|ɛ|k|t>>"},
@@ -381,9 +392,13 @@
         let userData = { name: '', room: 'SUCCESS', gender: 'Male', language: 'nl' };
         let isRec = false, mediaRec, dgConnection, tStart, tInt, activeSegmentRef = null;
         let ttsEnabled = false, joinTimestamp = null, audioQueue = [], isAudioPlaying = false;
+        let isHandRaised = false, currentSpeaker = null;
 
         const ui = {
-            modal: document.getElementById('gateway-modal'), delModal: document.getElementById('delete-modal'), app: document.getElementById('app-container'), langSelect: document.getElementById('user-lang'), msgWin: document.getElementById('msg-stream'), txtIn: document.getElementById('text-input'), sendBtn: document.getElementById('send-btn'), micBtn: document.getElementById('mic-btn'), voiceOver: document.getElementById('voice-overlay'), livePreview: document.getElementById('live-preview'), timer: document.getElementById('timer'), viz: document.getElementById('viz'), ttsBtn: document.getElementById('tts-toggle-btn'), ttsIcon: document.getElementById('tts-icon'), logout: document.getElementById('logout-btn')
+            modal: document.getElementById('gateway-modal'), delModal: document.getElementById('delete-modal'), app: document.getElementById('app-container'), langSelect: document.getElementById('user-lang'), msgWin: document.getElementById('msg-stream'), txtIn: document.getElementById('text-input'), sendBtn: document.getElementById('send-btn'), 
+            micBtn: document.getElementById('mic-btn'), handBtn: document.getElementById('hand-btn'),
+            voiceOver: document.getElementById('voice-overlay'), livePreview: document.getElementById('live-preview'), timer: document.getElementById('timer'), viz: document.getElementById('viz'), ttsBtn: document.getElementById('tts-toggle-btn'), ttsIcon: document.getElementById('tts-icon'), logout: document.getElementById('logout-btn'),
+            banner: document.getElementById('speaker-banner'), bannerText: document.getElementById('speaker-text'), handsList: document.getElementById('hands-list'), handsListContainer: document.getElementById('hands-list-container')
         };
 
         // --- SEQUENTIAL AUDIO QUEUE (TTS) ---
@@ -451,6 +466,7 @@
 
         function bindFirebase(room) {
             ui.msgWin.innerHTML = '';
+            // 1. MESSAGES LISTENER
             onChildAdded(ref(db, `chats/${room}/messages`), async (snap) => {
                 const msg = snap.val();
                 if (msg.senderId !== myUserId && msg.timestamp >= joinTimestamp) {
@@ -464,12 +480,49 @@
                 document.querySelectorAll('.is-live').forEach(el => el.remove());
                 if (snap.val()) Object.entries(snap.val()).forEach(([key, val]) => renderBubble(val, true));
             });
+
+            // 2. SPEAKER LOCK LISTENER
+            onValue(ref(db, `chats/${room}/speaker`), (snap) => {
+                currentSpeaker = snap.val();
+                if (currentSpeaker) {
+                    ui.banner.classList.remove('hidden');
+                    if (currentSpeaker.id === myUserId) {
+                        ui.banner.classList.remove('bg-blue-600'); ui.banner.classList.add('bg-green-600');
+                        ui.bannerText.innerText = "🎙️ You are speaking...";
+                        ui.micBtn.classList.remove('mic-disabled'); // Keep enabled for speaker
+                    } else {
+                        ui.banner.classList.remove('bg-green-600'); ui.banner.classList.add('bg-blue-600');
+                        ui.bannerText.innerText = `🔊 ${currentSpeaker.name} is speaking...`;
+                        ui.micBtn.classList.add('mic-disabled'); // Disable for others
+                    }
+                } else {
+                    ui.banner.classList.add('hidden');
+                    ui.micBtn.classList.remove('mic-disabled');
+                }
+            });
+
+            // 3. HANDS LISTENER
+            onValue(ref(db, `chats/${room}/hands`), (snap) => {
+                const hands = snap.val() || {};
+                ui.handsList.innerHTML = '';
+                const entries = Object.entries(hands);
+                ui.handsListContainer.classList.toggle('hidden', entries.length === 0);
+                
+                isHandRaised = !!hands[myUserId];
+                ui.handBtn.classList.toggle('text-yellow-500', isHandRaised);
+
+                entries.forEach(([id, name]) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 text-xs bg-gray-200 p-2 rounded-md animate-in fade-in zoom-in";
+                    div.innerHTML = `<i class="fa-solid fa-hand text-yellow-500"></i> <span class="font-semibold">${name}</span>`;
+                    ui.handsList.appendChild(div);
+                });
+            });
         }
 
         function renderBubble(msg, isLive = false) {
             const isMe = msg.senderId === myUserId;
             const div = document.createElement('div');
-            // Check if sender is me for styling
             div.className = `flex w-full mb-1 ${isMe ? 'msg-container-me' : 'msg-container-other'} ${isLive ? 'is-live opacity-50' : ''}`;
             
             const display = (!isMe && !isLive && msg.translated) ? msg.translated : msg.text;
@@ -488,9 +541,32 @@
             ui.msgWin.appendChild(div); ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
         }
 
+        // --- HANDS LOGIC ---
+        ui.handBtn.onclick = () => {
+            if(isHandRaised) {
+                remove(ref(db, `chats/${userData.room}/hands/${myUserId}`));
+            } else {
+                set(ref(db, `chats/${userData.room}/hands/${myUserId}`), userData.name);
+            }
+        };
+
         // --- NEW DEEPGRAM LOGIC WITH SDK ---
         async function startVoice() {
+            // CHECK LOCK FIRST
+            if (currentSpeaker && currentSpeaker.id !== myUserId) {
+                alert("Please wait for your turn!");
+                return;
+            }
+
             try {
+                // SET LOCK
+                const speakerRef = ref(db, `chats/${userData.room}/speaker`);
+                await set(speakerRef, { id: myUserId, name: userData.name });
+                onDisconnect(speakerRef).remove(); // Safety: Unlock if crash
+
+                // IF HAND WAS RAISED, LOWER IT
+                if(isHandRaised) remove(ref(db, `chats/${userData.room}/hands/${myUserId}`));
+
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 isRec = true; 
                 ui.voiceOver.classList.remove('hidden'); 
@@ -501,13 +577,8 @@
                 tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart)/1000); ui.timer.innerText = `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }, 1000);
 
                 const deepgram = createClient(DEEPGRAM_API_KEY);
-                
-                // Prepare Keywords from Lexicon if Dutch
-                // We map the "text" field to the keywords array to boost them in the model
                 let keywords = [];
-                if(userData.language === 'nl') {
-                    keywords = DUTCH_LEXICON_DATA.map(item => item.text);
-                }
+                if(userData.language === 'nl') keywords = DUTCH_LEXICON_DATA.map(item => item.text);
 
                 dgConnection = deepgram.listen.live({
                     model: 'nova-3',
@@ -517,7 +588,7 @@
                     endpointing: 500, 
                     punctuate: true,
                     vad_events: true,
-                    keywords: keywords // Inject Robust Dutch terms
+                    keywords: keywords
                 });
 
                 dgConnection.on(LiveTranscriptionEvents.Open, () => {
@@ -532,7 +603,6 @@
                     if (data.type === 'SpeechStarted') return;
                     const alt = data.channel?.alternatives?.[0];
                     if (alt && alt.transcript) {
-                        // UPDATE LIVE PREVIEW IN FOOTER
                         ui.livePreview.innerText = alt.transcript;
                         pushMsg(alt.transcript, data.is_final);
                     }
@@ -547,6 +617,9 @@
         }
 
         function stopVoice(save) {
+            // RELEASE LOCK
+            remove(ref(db, `chats/${userData.room}/speaker`));
+
             isRec = false; 
             mediaRec?.stop(); 
             dgConnection?.finish(); 
