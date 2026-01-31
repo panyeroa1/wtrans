@@ -1,7 +1,7 @@
 {
-  "name": "Succes Class",
-  "short_name": "Succes",
-  "description": "Connect with your classroom community through voice-enabled chat",
+  "name": "Succes Class - Voice Chat Classroom",
+  "short_name": "Succes Class",
+  "description": "Connect with your classroom community through voice-enabled, AI-powered chat with real-time translation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#008069",
@@ -15,11 +15,23 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "permissions": [
     "microphone",
     "storage",
-    "notifications"
+    "notifications",
+    "background-sync"
+  ],
+  "features": [
+    "microphone-capture",
+    "speech-recognition",
+    "offline-access"
   ]
 }
