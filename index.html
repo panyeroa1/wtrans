@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#008069">
     <title>Succes Class | Group SUCCESS</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="logo.png" type="image/png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,10 +14,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
-        
-        /* Strict No-Zoom for mobile/tablet */
         input, select, button { font-size: 16px !important; touch-action: manipulation; }
-        
         .chat-bg { background-color: #efeae2; background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); background-size: 400px; }
         
         @media (max-width: 767px) {
@@ -23,16 +23,18 @@
             .mobile-chat-open #chat-main { transform: translateX(0); }
             .mobile-chat-open #sidebar { transform: translateX(-100%); }
         }
-
+        
         .bubble-shadow { box-shadow: 0 1px 0.5px rgba(0,0,0,0.15); }
         .emotion-emoji { font-size: 1.25rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
+        .recording-pulse { animation: recordingPulse 1.5s infinite; }
+        @keyframes recordingPulse { 0% { box-shadow: 0 0 0 0 rgba(255,59,48,0.7); } 70% { box-shadow: 0 0 0 10px rgba(255,59,48,0); } 100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); } }
     </style>
 </head>
 <body class="flex items-center justify-center">
 
     <!-- DELETE CONFIRMATION MODAL -->
     <div id="delete-modal" class="fixed inset-0 z-[110] bg-black/60 flex items-center justify-center p-6 hidden">
-        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
             <h3 class="text-lg font-bold text-gray-800">Clear Succes Class?</h3>
             <p class="text-sm text-gray-500 mt-2">Delete all messages in this room? This cannot be undone.</p>
             <div class="flex justify-end gap-3 mt-6">
@@ -44,8 +46,9 @@
 
     <!-- GATEWAY MODAL -->
     <div id="gateway-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden">
             <div class="bg-[#008069] p-6 text-white text-center">
+                <img src="logo.png" alt="Logo" class="w-16 h-16 mx-auto mb-3 rounded-xl shadow-lg">
                 <h2 class="text-xl font-bold italic tracking-tight">Succes Class</h2>
                 <p class="text-xs opacity-80 mt-1 uppercase tracking-widest">Connect to SUCCESS</p>
             </div>
@@ -71,9 +74,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Language</label>
-                        <select id="user-lang" class="w-full border-2 border-gray-100 rounded-lg px-3 py-2 outline-none focus:border-[#008069] bg-white text-sm">
-                            <!-- Populated by JS -->
-                        </select>
+                        <select id="user-lang" class="w-full border-2 border-gray-100 rounded-lg px-3 py-2 outline-none focus:border-[#008069] bg-white text-sm"></select>
                     </div>
                 </div>
 
@@ -95,15 +96,7 @@
                     <i class="fa-solid fa-message"></i><i class="fa-solid fa-ellipsis-vertical"></i>
                 </div>
             </div>
-            <div id="chat-list" class="flex-1 overflow-y-auto">
-                <div class="flex items-center gap-3 p-3 bg-gray-100 border-b">
-                    <div id="sidebar-avatar" class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shrink-0">SU</div>
-                    <div class="flex-1 overflow-hidden">
-                        <h3 id="sidebar-room-name" class="font-semibold text-gray-800 text-sm">SUCCESS</h3>
-                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Paired Language Voice Logic Active</p>
-                    </div>
-                </div>
-            </div>
+            <div id="chat-list" class="flex-1 overflow-y-auto"></div>
         </aside>
 
         <main id="chat-main" class="flex-1 flex flex-col bg-[#efeae2] relative shadow-2xl">
@@ -153,28 +146,73 @@
         // --- KEYS & VOICES ---
         const CARTESIA_KEY = "sk_car_yWEX9Mp2LwKju8FXyosGhj";
         const DEEPGRAM_KEY = '11ee938d032ce7c36c6fa82338274be5e4ada847';
-        const DEFAULT_VOICES = { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
         
+        // FULL VOICE MAP FROM YOUR DATA
         const VOICE_MAP = {
-            "en": { "Male": "5ee9feff-1265-424a-9d7f-8e4d431a12c7", "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" },
-            "hi": { "Male": "7e8cb11d-37af-476b-ab8f-25da99b18644", "Female": "bec003e2-3cb3-429c-8468-206a393c67ad" },
-            "es": { "Male": "15d0c2e2-8d29-44c3-be23-d585d5f154a1", "Female": "5c5ad5e7-1020-476b-8b91-fdcbe9cc313c" },
-            "de": { "Male": "b7187e84-fe22-4344-ba4a-bc013fcb533e", "Female": "38aabb6a-f52b-4fb0-a3d1-988518f4dc06" },
-            "ar": { "Male": "f1cdfb4a-bf7d-4e83-916e-8f0802278315", "Female": "002622d8-19d0-4567-a16a-f99c7397c062" },
-            "ko": { "Male": "af6beeea-d732-40b6-8292-73af0035b740", "Female": "15628352-2ede-4f1b-89e6-ceda0c983fbc" },
-            "fr": { "Male": "0418348a-0ca2-4e90-9986-800fb8b3bbc0", "Female": "a8a1eb38-5f15-4c1d-8722-7ac0f329727d" },
-            "ja": { "Male": "e8a863c6-22c7-4671-86ca-91cacffc038d", "Female": "2b568345-1d48-4047-b25f-7baccf842eb0" },
-            "pt": { "Male": "6a360542-a117-4ed5-9e09-e8bf9b05eabb", "Female": "d4b44b9a-82bc-4b65-b456-763fce4c52f9" },
-            "ta": { "Female": "25d2c432-139c-4035-bfd6-9baaabcdd006" },
-            "te": { "Female": "07bc462a-c644-49f1-baf7-82d5599131be" },
-            "nl": { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" }
+            "en": { 
+                "Male": "5ee9feff-1265-424a-9d7f-8e4d431a12c7", // Ronald - Thinker
+                "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" // Brooke - Big Sister
+            },
+            "hi": { 
+                "Male": "7e8cb11d-37af-476b-ab8f-25da99b18644", // Anuj - Engaging Narrator
+                "Female": "bec003e2-3cb3-429c-8468-206a393c67ad" // Parvati - Friendly Supporter
+            },
+            "es": { 
+                "Male": "15d0c2e2-8d29-44c3-be23-d585d5f154a1", // Pedro - Formal Speaker
+                "Female": "5c5ad5e7-1020-476b-8b91-fdcbe9cc313c" // Daniela - Relaxed Woman
+            },
+            "de": { 
+                "Male": "b7187e84-fe22-4344-ba4a-bc013fcb533e", // Sebastian - Orator
+                "Female": "38aabb6a-f52b-4fb0-a3d1-988518f4dc06" // Alina - Engaging Assistant
+            },
+            "ar": { 
+                "Male": "f1cdfb4a-bf7d-4e83-916e-8f0802278315", // Walid - Steady Presence
+                "Female": "002622d8-19d0-4567-a16a-f99c7397c062" // Huda - Approachable Speaker
+            },
+            "ko": { 
+                "Male": "af6beeea-d732-40b6-8292-73af0035b740", // Byungtae - Enforcer
+                "Female": "15628352-2ede-4f1b-89e6-ceda0c983fbc" // Jiwoo - Service Specialist
+            },
+            "fr": { 
+                "Male": "0418348a-0ca2-4e90-9986-800fb8b3bbc0", // Antoine - Stern Man
+                "Female": "a8a1eb38-5f15-4c1d-8722-7ac0f329727d" // Calm French Woman
+            },
+            "ja": { 
+                "Male": "e8a863c6-22c7-4671-86ca-91cacffc038d", // Daisuke - Businessman
+                "Female": "2b568345-1d48-4047-b25f-7baccf842eb0" // Yumiko - Friendly Agent
+            },
+            "pt": { 
+                "Male": "6a360542-a117-4ed5-9e09-e8bf9b05eabb", // Tiago - Narration Expert
+                "Female": "d4b44b9a-82bc-4b65-b456-763fce4c52f9" // Beatriz - Support Guide
+            },
+            "ta": { 
+                "Female": "25d2c432-139c-4035-bfd6-9baaabcdd006" // Kavya - Warm Presence
+            },
+            "te": { 
+                "Female": "07bc462a-c644-49f1-baf7-82d5599131be" // Sindhu - Conversational Partner
+            },
+            "nl": { 
+                "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", // Thomas - Anchor
+                "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" // Lena - Muse
+            },
+            "ru": { 
+                "Male": "79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e", // Theo - Modern Narrator (fallback)
+                "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" // Brooke - Big Sister (fallback)
+            },
+            "it": { 
+                "Male": "a167e0f3-df7e-4d52-a9c3-f949145efdab", // Blake - Helpful Agent (fallback)
+                "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" // Brooke - Big Sister (fallback)
+            },
+            "zh": { 
+                "Male": "79f8b5fb-2cc8-479a-80df-29f7a7cf1a3e", // Theo - Modern Narrator (fallback)
+                "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" // Brooke - Big Sister (fallback)
+            }
         };
 
+        const DEFAULT_VOICES = { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
         const firebaseConfig = { apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs", authDomain: "macx-5feca.firebaseapp.com", databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "macx-5feca" };
-        const app = initializeApp(firebaseConfig); const db = getDatabase(app);
-
-        const fullLangList = ["Abkhaz","Acehnese","Acholi","Afar","Afrikaans","Albanian","Alur","Amharic","Arabic","Armenian","Assamese","Avar","Awadhi","Aymara","Azerbaijani","Balinese","Baluchi","Bambara","Baoulé","Bashkir","Basque","Batak Karo","Batak Simalungun","Batak Toba","Belarusian","Bemba","Bengali","Betawi","Bhojpuri","Bikol","Bosnian","Breton","Bulgarian","Buryat","Cantonese","Catalan","Cebuano","Chamorro","Chechen","Chichewa","Chinese (Simplified)","Chinese (Traditional)","Chuukese","Chuvash","Corsican","Crimean Tatar (Cyrillic)","Crimean Tatar (Latin)","Croatian","Czech","Danish","Dari","Dhivehi","Dinka","Dogri","Dombe","Dutch","Dyula","Dzongkha","English","Esperanto","Estonian","Ewe","Faroese","Fijian","Filipino","Finnish","Fon","French","French (Canada)","Frisian","Friulian","Fulani","Ga","Galician","Georgian","German","Greek","Guarani","Gujarati","Haitian Creole","Hakha Chin","Hausa","Hawaiian","Hebrew","Hiligaynon","Hindi","Hmong","Hungarian","Hunsrik","Iban","Icelandic","Igbo","Ilocano","Indonesian","Inuktut (Latin)","Inuktut (Syllabics)","Irish","Italian","Jamaican Patois","Japanese","Javanese","Jingpo","Kalaallisut","Kannada","Kanuri","Kapampangan","Kazakh","Khasi","Khmer","Kiga","Kikongo","Kinyarwanda","Kituba","Kokborok","Komi","Konkani","Korean","Krio","Kurdish (Kurmanji)","Kurdish (Sorani)","Kyrgyz","Lao","Latgalian","Latin","Latvian","Ligurian","Limburgish","Lingala","Lithuanian","Lombard","Luganda","Luo","Luxembourgish","Macedonian","Madurese","Maithili","Makassar","Malagasy","Malay","Malay (Jawi)","Malayalam","Maltese","Mam","Manx","Maori","Marathi","Marshallese","Marwadi","Mauritian Creole","Meadow Mari","Meiteilon (Manipuri)","Minang","Mizo","Mongolian","Myanmar (Burmese)","Nahuatl (Eastern Huasteca)","Ndau","Ndebele (South)","Nepalbhasa (Newari)","Nepali","NKo","Norwegian","Nuer","Occitan","Odia (Oriya)","Oromo","Ossetian","Pangasinan","Papiamento","Pashto","Persian","Polish","Portuguese (Brazil)","Portuguese (Portugal)","Punjabi (Gurmukhi)","Punjabi (Shahmukhi)","Quechua","Qʼeqchiʼ","Romani","Romanian","Rundi","Russian","Sami (North)","Samoan","Sango","Sanskrit","Santali (Latin)","Santali (Ol Chiki)","Scots Gaelic","Sepedi","Serbian","Sesotho","Seychellois Creole","Shan","Shona","Sicilian","Silesian","Sindhi","Sinhala","Slovak","Slovenian","Somali","Spanish","Sundanese","Susu","Swahili","Swati","Swedish","Tahitian","Tajik","Tamazight","Tamazight (Tifinagh)","Tamil","Tatar","Telugu","Tetum","Thai","Tibetan","Tigrinya","Tiv","Tok Pisin","Tongan","Tshiluba","Tsonga","Tswana","Tulu","Tumbuka","Turkish","Turkmen","Tuvan","Twi","Udmurt","Ukrainian","Urdu","Uyghur","Uzbek","Venda","Venetian","Vietnamese","Waray","Welsh","Wolof","Xhosa","Yakut","Yiddish","Yoruba","Yucatec Maya","Zapotec","Zulu"];
         const EMOTIONS = { "neutral": "😐", "angry": "😠", "excited": "🤩", "content": "😊", "sad": "😢", "scared": "😨", "happy": "😀", "apologetic": "🙇", "curious": "🤔", "amazed": "😲" };
+        const fullLangList = ["Abkhaz","Acehnese","Acholi","Afar","Afrikaans","Albanian","Alur","Amharic","Arabic","Armenian","Assamese","Avar","Awadhi","Aymara","Azerbaijani","Balinese","Baluchi","Bambara","Baoulé","Bashkir","Basque","Batak Karo","Batak Simalungun","Batak Toba","Belarusian","Bemba","Bengali","Betawi","Bhojpuri","Bikol","Bosnian","Breton","Bulgarian","Buryat","Cantonese","Catalan","Cebuano","Chamorro","Chechen","Chichewa","Chinese (Simplified)","Chinese (Traditional)","Chuukese","Chuvash","Corsican","Crimean Tatar (Cyrillic)","Crimean Tatar (Latin)","Croatian","Czech","Danish","Dari","Dhivehi","Dinka","Dogri","Dombe","Dutch","Dyula","Dzongkha","English","Esperanto","Estonian","Ewe","Faroese","Fijian","Filipino","Finnish","Fon","French","French (Canada)","Frisian","Friulian","Fulani","Ga","Galician","Georgian","German","Greek","Guarani","Gujarati","Haitian Creole","Hakha Chin","Hausa","Hawaiian","Hebrew","Hiligaynon","Hindi","Hmong","Hungarian","Hunsrik","Iban","Icelandic","Igbo","Ilocano","Indonesian","Inuktut (Latin)","Inuktut (Syllabics)","Irish","Italian","Jamaican Patois","Japanese","Javanese","Jingpo","Kalaallisut","Kannada","Kanuri","Kapampangan","Kazakh","Khasi","Khmer","Kiga","Kikongo","Kinyarwanda","Kituba","Kokborok","Komi","Konkani","Korean","Krio","Kurdish (Kurmanji)","Kurdish (Sorani)","Kyrgyz","Lao","Latgalian","Latin","Latvian","Ligurian","Limburgish","Lingala","Lithuanian","Lombard","Luganda","Luo","Luxembourgish","Macedonian","Madurese","Maithili","Makassar","Malagasy","Malay","Malay (Jawi)","Malayalam","Maltese","Mam","Manx","Maori","Marathi","Marshallese","Marwadi","Mauritian Creole","Meadow Mari","Meiteilon (Manipuri)","Minang","Mizo","Mongolian","Myanmar (Burmese)","Nahuatl (Eastern Huasteca)","Ndau","Ndebele (South)","Nepalbhasa (Newari)","Nepali","NKo","Norwegian","Nuer","Occitan","Odia (Oriya)","Oromo","Ossetian","Pangasinan","Papiamento","Pashto","Persian","Polish","Portuguese (Brazil)","Portuguese (Portugal)","Punjabi (Gurmukhi)","Punjabi (Shahmukhi)","Quechua","Qʼeqchiʼ","Romani","Romanian","Rundi","Russian","Sami (North)","Samoan","Sango","Sanskrit","Santali (Latin)","Santali (Ol Chiki)","Scots Gaelic","Sepedi","Serbian","Sesotho","Seychellois Creole","Shan","Shona","Sicilian","Silesian","Sindhi","Sinhala","Slovak","Slovenian","Somali","Spanish","Sundanese","Susu","Swahili","Swati","Swedish","Tahitian","Tajik","Tamazight","Tamazight (Tifinagh)","Tamil","Tatar","Telugu","Tetum","Thai","Tibetan","Tigrinya","Tiv","Tok Pisin","Tongan","Tshiluba","Tsonga","Tswana","Tulu","Tumbuka","Turkish","Turkmen","Tuvan","Twi","Udmurt","Ukrainian","Urdu","Uyghur","Uzbek","Venda","Venetian","Vietnamese","Waray","Welsh","Wolof","Xhosa","Yakut","Yiddish","Yoruba","Yucatec Maya","Zapotec","Zulu"];
 
         // --- SESSION STATE ---
         let myUserId = `user-${Math.floor(Math.random()*99999)}`;
@@ -197,7 +235,7 @@
                 const res = await fetch("https://api.cartesia.ai/tts/bytes", {
                     method: "POST",
                     headers: { "Cartesia-Version": "2025-04-16", "X-API-Key": CARTESIA_KEY, "Content-Type": "application/json" },
-                    body: JSON.stringify({ "model_id": "sonic-3-latest", "transcript": `<emotion value="${item.emotion || 'neutral'}" />${item.text}`, "voice": { "mode": "id", "id": vId }, "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 }, "speed": "normal", "generation_config": { "speed": 1, "volume": 1, "emotion": item.emotion || "neutral" } })
+                    body: JSON.stringify({ "model_id": "sonic-3-latest", "transcript": item.text, "voice": { "mode": "id", "id": vId }, "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 } })
                 });
                 if (res.ok) {
                     const audio = new Audio(URL.createObjectURL(await res.blob()));
@@ -220,11 +258,10 @@
         // --- FIREBASE SYNC ---
         function pushMsg(raw, isFinal = true) {
             const text = cleanTranscript(raw); if (!text) return;
-            const emotion = "content";
             const path = isFinal ? `chats/${userData.room}/messages` : `chats/${userData.room}/drafts`;
             const tRef = isFinal ? push(ref(db, path)) : (activeSegmentRef || push(ref(db, path)));
             if (!isFinal) activeSegmentRef = tRef;
-            set(tRef, { text, senderId: myUserId, senderName: userData.name, gender: userData.gender, lang: userData.language, emotion, emoji: EMOTIONS[emotion] || '😐', timestamp: Date.now() });
+            set(tRef, { text, senderId: myUserId, senderName: userData.name, gender: userData.gender, lang: userData.language, emotion: "neutral", timestamp: Date.now() });
             if (isFinal && activeSegmentRef) { remove(activeSegmentRef); activeSegmentRef = null; }
         }
 
@@ -234,7 +271,7 @@
                 const msg = snap.val();
                 if (msg.senderId !== myUserId && msg.timestamp >= joinTimestamp) {
                     msg.translated = await translate(msg.text, msg.lang, userData.language);
-                    audioQueue.push({ text: msg.translated, gender: msg.gender, emotion: msg.emotion, lang: userData.language });
+                    audioQueue.push({ text: msg.translated, gender: msg.gender, lang: userData.language });
                     if(ttsEnabled) processAudioQueue();
                 }
                 renderBubble(msg);
@@ -250,7 +287,7 @@
             const div = document.createElement('div');
             div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} ${isLive ? 'is-live opacity-50' : ''}`;
             const display = (!isMe && msg.translated) ? msg.translated : msg.text;
-            div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div></div>`;
+            div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">😐</div></div>`;
             ui.msgWin.appendChild(div); ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
         }
 
@@ -295,24 +332,16 @@
             document.body.classList.add('mobile-chat-open'); bindFirebase(userData.room);
         }
 
-        function setupViz(s) {
-            const vCtx = new AudioContext(); const aAn = vCtx.createAnalyser(); aAn.fftSize = 64; vCtx.createMediaStreamSource(s).connect(aAn);
-            const b = new Uint8Array(aAn.frequencyBinCount), ctx = ui.viz.getContext('2d'); ui.viz.width = ui.viz.parentElement.offsetWidth;
-            const dr = () => { if(!isRec) return vCtx.close(); requestAnimationFrame(dr); aAn.getByteFrequencyData(b); ctx.clearRect(0,0,ui.viz.width,ui.viz.height);
-                let x = 0; for(let i=0; i<b.length; i++) { const h = (b[i]/255)*30; ctx.fillStyle='#00a884'; ctx.beginPath(); ctx.roundRect(x,(30-h)/2,2,h,10); ctx.fill(); x += 5; }
-            }; dr();
-        }
-
-        fullLangList.forEach(l => {
-            const opt = document.createElement('option');
-            const map = { "Dutch": "nl", "Tagalog": "tl", "English": "en", "Spanish": "es", "French": "fr", "German": "de", "Arabic": "ar", "Korean": "ko", "Japanese": "ja", "Portuguese": "pt", "Tamil": "ta", "Telugu": "te", "Hindi": "hi" };
-            opt.value = map[l] || "en"; opt.text = l === "Dutch" ? "Dutch Flemish" : l;
-            if(l === "Dutch") opt.selected = true; ui.langSelect.add(opt);
-        });
-
+        // --- EVENTS & INIT ---
         window.toggleDeleteModal = (show) => ui.delModal.classList.toggle('hidden', !show);
         document.getElementById('confirm-delete-btn').onclick = () => { remove(ref(db, `chats/${userData.room}`)); toggleDeleteModal(false); ui.msgWin.innerHTML = ''; };
-        ui.logout.onclick = () => { localStorage.removeItem('succes_session'); location.reload(); };
+        
+        ui.logout.onclick = () => { 
+            if(isRec) stopVoice(false);
+            localStorage.removeItem('succes_session'); 
+            location.reload(); 
+        };
+        
         document.getElementById('btn-connect').onclick = () => connect(false);
         ui.ttsBtn.onclick = () => { ttsEnabled = !ttsEnabled; ui.ttsIcon.className = ttsEnabled ? "fa-solid fa-volume-high text-[#008069]" : "fa-solid fa-volume-xmark text-gray-400"; if(ttsEnabled) processAudioQueue(); };
         ui.txtIn.oninput = () => { const v = ui.txtIn.value.trim(); ui.sendBtn.classList.toggle('hidden', v===""); ui.micBtn.classList.toggle('hidden', v!==""); };
@@ -321,8 +350,26 @@
         document.getElementById('stop-voice').onclick = () => stopVoice(true);
         document.getElementById('cancel-voice').onclick = () => stopVoice(false);
 
+        // Language list population
+        fullLangList.forEach(l => {
+            const opt = document.createElement('option');
+            const map = { "Dutch": "nl", "Tagalog": "tl", "English": "en", "Spanish": "es", "French": "fr", "German": "de", "Arabic": "ar", "Korean": "ko", "Japanese": "ja", "Portuguese": "pt", "Tamil": "ta", "Telugu": "te", "Hindi": "hi", "Russian": "ru", "Chinese (Simplified)": "zh", "Italian": "it" };
+            opt.value = map[l] || "en"; opt.text = l === "Dutch" ? "Dutch Flemish" : l;
+            if(l === "Dutch") opt.selected = true; ui.langSelect.add(opt);
+        });
+
+        // Load saved session
         const saved = localStorage.getItem('succes_session');
         if(saved) { const d = JSON.parse(saved); userData = d; joinTimestamp = d.joinTime; connect(true); }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(registration => {
+                console.log('SW registered: ', registration);
+            }).catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+        }
     </script>
 </body>
 </html>
