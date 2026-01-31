@@ -176,7 +176,6 @@
                     <button id="logout-btn" title="Logout" class="hover:text-red-400 transition-colors"><i
                             class="fa-solid fa-right-from-bracket"></i></button>
                     <i class="fa-solid fa-message"></i>
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
                 </div>
             </div>
             <div id="chat-list" class="flex-1 overflow-y-auto">
@@ -215,6 +214,8 @@
                     <button id="tts-toggle-btn"
                         class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl"><i id="tts-icon"
                             class="fa-solid fa-volume-xmark"></i></button>
+                    <button id="share-link-btn" class="text-gray-400 hover:text-blue-500 transition-colors p-2 text-xl"
+                        title="Share Link"><i class="fa-solid fa-share-nodes"></i></button>
                     <button id="clear-chat-btn" class="text-gray-400 hover:text-red-500 transition-colors p-2 text-xl"
                         title="Clear Chat"><i class="fa-solid fa-trash"></i></button>
                 </div>
@@ -535,6 +536,7 @@
         // --- AUDIO MODES ---
         let recMode = null; // 'stream' or 'dictate'
         let dictationBuffer = "";
+        let lastInterim = ""; // Fallback if no final result
 
         async function startVoice(mode = 'stream') {
             try {
@@ -598,8 +600,10 @@
                         pushMsg(txt, data.is_final);
                     } else {
                         // Dictate: Accumulate final results
+                        lastInterim = txt; // Always save latest
                         if (data.is_final) {
                             dictationBuffer += (dictationBuffer ? " " : "") + txt;
+                            lastInterim = ""; // Clear interim since we have final
                         }
                     }
                 });
@@ -619,8 +623,12 @@
 
                 await new Promise(r => setTimeout(r, 1500)); // Increased to 1.5s
 
-                if (dictationBuffer.trim()) {
-                    pushMsg(dictationBuffer.trim(), true);
+                // Use buffer OR fallback to last interim
+                const finalMsg = dictationBuffer.trim() || lastInterim.trim();
+
+                if (finalMsg) {
+                    pushMsg(finalMsg, true);
+                    showToast("Sent!");
                 } else {
                     showToast("No speech detected.");
                 }
@@ -642,6 +650,7 @@
 
             recMode = null;
             dictationBuffer = "";
+            lastInterim = "";
         }
 
         function setupViz(stream) {
@@ -673,6 +682,11 @@
                     : `chats/${currentChatId}/messages`;
                 remove(ref(db, path)).then(() => showToast("Chat cleared"));
             }
+        };
+        document.getElementById('share-link-btn').onclick = () => {
+            // Copy current URL (or clean base URL)
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => showToast("Link copied to clipboard!"));
         };
         document.getElementById('raise-hand-btn').onclick = () => {
             pushMsg("raised hand", true);
