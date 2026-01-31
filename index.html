@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- NATIVE MOBILE LOCK -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Succes Class | Group SUCCESS</title>
     
@@ -11,51 +10,34 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f0f2f5; 
-            height: 100vh; 
-            margin: 0; 
-            overflow: hidden; 
-            touch-action: manipulation; 
-        }
+        /* Mobile Precision Locks */
+        input, select, button { font-size: 16px !important; touch-action: manipulation; }
         
-        /* Strict Input Font Size to prevent iOS Zoom */
-        input, select, button, textarea { 
-            font-size: 16px !important; 
-            touch-action: manipulation; 
-        }
+        .chat-bg { background-color: #efeae2; background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); background-size: 400px; }
         
-        .chat-bg { 
-            background-color: #efeae2; 
-            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); 
-            background-size: 400px; 
-        }
-        
-        /* Mobile Responsive View Logic */
         @media (max-width: 767px) {
             #sidebar { position: absolute; width: 100%; height: 100%; z-index: 20; transition: transform 0.3s ease; }
             #chat-main { position: absolute; width: 100%; height: 100%; z-index: 30; transform: translateX(100%); transition: transform 0.3s ease; }
-            
             .mobile-chat-open #chat-main { transform: translateX(0); }
             .mobile-chat-open #sidebar { transform: translateX(-100%); }
         }
 
         .bubble-shadow { box-shadow: 0 1px 0.5px rgba(0,0,0,0.15); }
-        .emotion-emoji { font-size: 1.25rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
+        .emotion-emoji { font-size: 1.2rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
     </style>
 </head>
 <body class="flex items-center justify-center">
 
-    <!-- DELETE CONFIRMATION MODAL -->
+    <!-- DELETE ROOM MODAL -->
     <div id="delete-modal" class="fixed inset-0 z-[110] bg-black/60 flex items-center justify-center p-6 hidden">
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in duration-200">
-            <h3 class="text-lg font-bold text-gray-800">Clear Succes Class?</h3>
-            <p class="text-sm text-gray-500 mt-2">Delete all conversation history in this room? This cannot be undone.</p>
+            <h3 class="text-lg font-bold text-gray-800">Clear Succes Class Room?</h3>
+            <p class="text-sm text-gray-500 mt-2">Delete all messages for everyone? This is permanent.</p>
             <div class="flex justify-end gap-3 mt-6">
                 <button onclick="toggleDeleteModal(false)" class="px-4 py-2 text-sm font-semibold text-gray-400">Cancel</button>
-                <button id="confirm-delete-btn" class="px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg">Delete All</button>
+                <button id="confirm-delete-btn" class="px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg">Clear All</button>
             </div>
         </div>
     </div>
@@ -90,28 +72,26 @@
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Language</label>
                         <select id="user-lang" class="w-full border-2 border-gray-100 rounded-lg px-3 py-2 outline-none focus:border-[#008069] bg-white text-sm">
-                            <!-- Populated by JS -->
+                            <!-- Populated -->
                         </select>
                     </div>
                 </div>
 
                 <button id="btn-connect" class="w-full bg-[#00a884] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#008069] transition-all uppercase tracking-widest mt-2">
-                    Enter Group
+                    Enter Succes Class
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN INTERFACE -->
+    <!-- MAIN APP -->
     <div id="app-container" class="flex h-full w-full max-w-[1600px] bg-white overflow-hidden relative opacity-0 transition-opacity duration-500">
         
-        <!-- SIDEBAR -->
         <aside id="sidebar" class="w-[350px] border-r border-gray-200 bg-white flex flex-col shrink-0">
             <div class="h-[64px] bg-[#008069] flex items-center justify-between px-4 text-white shrink-0">
                 <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-teal-900 flex items-center justify-center font-bold shadow-inner">SC</div></div>
-                <div class="flex gap-5 items-center opacity-70">
+                <div class="flex gap-4 items-center opacity-70">
                     <button id="logout-btn" title="Logout" class="hover:text-red-400 transition-colors"><i class="fa-solid fa-right-from-bracket"></i></button>
-                    <i class="fa-solid fa-message"></i>
                     <i class="fa-solid fa-ellipsis-vertical"></i>
                 </div>
             </div>
@@ -120,13 +100,12 @@
                     <div id="sidebar-avatar" class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shrink-0">SU</div>
                     <div class="flex-1 overflow-hidden">
                         <h3 id="sidebar-room-name" class="font-semibold text-gray-800 text-sm">SUCCESS</h3>
-                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Sender Hidden | Receiver Active</p>
+                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Continuous Segmenting Active</p>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- CHAT PANEL -->
         <main id="chat-main" class="flex-1 flex flex-col bg-[#efeae2] relative shadow-2xl">
             <header class="bg-[#f0f2f5] h-[64px] flex items-center justify-between px-4 border-b border-gray-200 shrink-0 z-20">
                 <div class="flex items-center gap-3">
@@ -134,19 +113,19 @@
                     <div id="header-avatar" class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold shadow-sm">SU</div>
                     <div>
                         <h2 id="room-header-name" class="font-semibold text-gray-800 text-[15px] leading-tight">SUCCESS</h2>
-                        <span id="user-display-meta" class="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Connecting...</span>
+                        <span id="user-display-meta" class="text-[9px] text-gray-400 font-bold uppercase tracking-tight">Loading...</span>
                     </div>
                 </div>
                 <div class="flex gap-5 items-center">
-                    <button onclick="toggleDeleteModal(true)" title="Delete Chat" class="text-gray-400 hover:text-red-500 transition-colors p-2 text-lg"><i class="fa-solid fa-trash-can"></i></button>
-                    <button id="tts-toggle-btn" title="Toggle Playback" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl">
+                    <button onclick="toggleDeleteModal(true)" class="text-gray-400 hover:text-red-500 transition-colors p-2 text-lg"><i class="fa-solid fa-trash-can"></i></button>
+                    <button id="tts-toggle-btn" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl">
                         <i id="tts-icon" class="fa-solid fa-volume-xmark"></i>
                     </button>
                     <i class="fa-solid fa-ellipsis-vertical text-gray-500"></i>
                 </div>
             </header>
 
-            <div id="msg-stream" class="flex-1 overflow-y-auto p-4 md:p-8 chat-bg flex flex-col gap-3 scroll-smooth"></div>
+            <div id="msg-stream" class="flex-1 overflow-y-auto p-4 md:p-8 chat-bg flex flex-col gap-3"></div>
 
             <div class="bg-[#f0f2f5] p-2 md:p-3 flex items-center gap-2 border-t border-gray-200 relative z-40">
                 <div class="flex w-full items-center gap-3 bg-white rounded-full px-4 py-2 shadow-sm">
@@ -161,7 +140,7 @@
                     <span id="timer" class="font-mono text-xs text-gray-500 w-10">00:00</span>
                     <div class="flex-1 h-8 flex items-center overflow-hidden mx-2"><canvas id="viz" height="30" class="w-full"></canvas></div>
                     <button id="cancel-voice" class="p-2 text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
-                    <button id="stop-voice" class="w-10 h-10 bg-[#00a884] text-white rounded-full flex items-center justify-center shadow-lg transform active:scale-90"><i class="fa-solid fa-check"></i></button>
+                    <button id="stop-voice" class="w-10 h-10 bg-[#00a884] text-white rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-check"></i></button>
                 </div>
             </div>
         </main>
@@ -170,32 +149,18 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, set, onChildAdded, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        // DEEPGRAM SDK IMPORT
         import { createClient, LiveTranscriptionEvents } from 'https://cdn.jsdelivr.net/npm/@deepgram/sdk@3/+esm';
 
-        // --- KEYS & CONFIG ---
-        const CARTESIA_KEY = "sk_car_yWEX9Mp2LwKju8FXyosGhj";
-        const DEEPGRAM_API_KEY = '9e1853eca8b887a8aa4032fbf3140dc5ecb6d118'; // Updated Key
-        
-        // DUTCH/FLEMISH LEXICON DATA (Boosts accuracy for NL)
-        const DUTCH_LEXICON_DATA = [
-            {"text": "maandag"}, {"text": "maatregel"}, {"text": "machine"}, {"text": "meisje"}, {"text": "melk"}, {"text": "meneer"}, {"text": "mes"}, {"text": "meteen"}, {"text": "meubel"}, {"text": "middag"}, {"text": "midden"}, {"text": "milieu"}, {"text": "miljoen"}, {"text": "minuut"}, {"text": "missen"}, {"text": "moeder"}, {"text": "moeilijk"}, {"text": "mogelijkheid"}, {"text": "moment"}, {"text": "mond"}, {"text": "mooi"}, {"text": "moord"}, {"text": "morgen"}, {"text": "motor"}, {"text": "muis"}, {"text": "museum"}, {"text": "muur"}, {"text": "muziek"}, {"text": "naam"}, {"text": "naast"}, {"text": "nacht"}, {"text": "nadat"}, {"text": "nagel"}, {"text": "namelijk"}, {"text": "nat"}, {"text": "natuur"}, {"text": "natuurlijk"}, {"text": "neer"}, {"text": "negen"}, {"text": "nek"}, {"text": "nemen"}, {"text": "nergens"}, {"text": "netjes"}, {"text": "neus"}, {"text": "niemand"}, {"text": "nieuws"}, {"text": "niveau"}, {"text": "noch"}, {"text": "noemen"}, {"text": "nood"}, {"text": "nooit"}, {"text": "noorden"}, {"text": "normaal"}, {"text": "nummer"}, {"text": "object"}, {"text": "oceaan"}, {"text": "ochtend"}, {"text": "oefening"}, {"text": "ofwel"}, {"text": "ogen"}, {"text": "olie"}, {"text": "omgeving"}, {"text": "omhoog"}, {"text": "omlaag"}, {"text": "onder"}, {"text": "onderneming"}, {"text": "onderwijs"}, {"text": "onderzoek"}, {"text": "ongeluk"}, {"text": "ongeveer"}, {"text": "onmiddellijk"}, {"text": "ontbijt"}, {"text": "ontdekken"}, {"text": "onthouden"}, {"text": "ontmoeten"}, {"text": "ontvangen"}, {"text": "ontwikkeling"}, {"text": "oog"}, {"text": "ooit"}, {"text": "oom"}, {"text": "oor"}, {"text": "oordeel"}, {"text": "oorlog"}, {"text": "oorzaak"}, {"text": "oost"}, {"text": "opdracht"}, {"text": "open"}, {"text": "openbaar"}, {"text": "opening"}, {"text": "opleiding"}, {"text": "oplossing"}, {"text": "opmerken"}, {"text": "oppassen"}, {"text": "ordenen"}, {"text": "organisatie"}, {"text": "oud"}, {"text": "ouder"}, {"text": "overal"}, {"text": "overeenkomst"}, {"text": "overheid"}, {"text": "overleg"}, {"text": "overlijden"}, {"text": "overtuigen"}, {"text": "paard"}, {"text": "pagina"}, {"text": "pak"}, {"text": "pakken"}, {"text": "pan"}, {"text": "papier"}, {"text": "park"}, {"text": "partner"}, {"text": "pas"}, {"text": "passeren"}, {"text": "pen"}, {"text": "peper"}, {"text": "per"}, {"text": "perfect"}, {"text": "periode"}, {"text": "persoon"}, {"text": "persoonlijk"}, {"text": "pijn"}, {"text": "plaats"}, {"text": "plaatsen"}, {"text": "plafond"}, {"text": "plan"}, {"text": "plank"}, {"text": "plant"}, {"text": "plastic"}, {"text": "plat"}, {"text": "plek"}, {"text": "plezier"}, {"text": "plotseling"}, {"text": "plus"}, {"text": "poes"}, {"text": "poging"}, {"text": "politie"}, {"text": "politiek"}, {"text": "poort"}, {"text": "populair"}, {"text": "positie"}, {"text": "post"}, {"text": "pot"}, {"text": "prachtig"}, {"text": "praktijk"}, {"text": "precies"}, {"text": "presentatie"}, {"text": "prijs"}, {"text": "prins"}, {"text": "prinses"}, {"text": "proberen"}, {"text": "probleem"}, {"text": "proces"}, {"text": "product"}, {"text": "proficiat"}, {"text": "programma"}, {"text": "project"}, {"text": "publiek"}, {"text": "punt"}
-        ];
-
-        // Default Anchors
-        const DEFAULT_VOICES = { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
-        
-        // PAIRED REGIONAL VOICES
+        // --- CORE CONFIG ---
+        const CARTESIA_KEY = "sk_car_LLjVbJe5PNKo21HA1R9YLC";
+        const DEEPGRAM_KEY = '11ee938d032ce7c36c6fa82338274be5e4ada847';
+        const DEFAULT_VOICES = { "Male": "a4072391-1a28-4fb0-9fcd-a2fd22eac06f", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
         const VOICE_MAP = {
             "en": { "Male": "5ee9feff-1265-424a-9d7f-8e4d431a12c7", "Female": "e07c00bc-4134-4eae-9ea4-1a55fb45746b" },
-            "nl": { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" },
+            "hi": { "Male": "7e8cb11d-37af-476b-ab8f-25da99b18644", "Female": "faf0731e-dfb9-4cfc-8119-259a79b27e12" },
             "es": { "Male": "15d0c2e2-8d29-44c3-be23-d585d5f154a1", "Female": "5c5ad5e7-1020-476b-8b91-fdcbe9cc313c" },
             "de": { "Male": "b7187e84-fe22-4344-ba4a-bc013fcb533e", "Female": "38aabb6a-f52b-4fb0-a3d1-988518f4dc06" },
-            "ar": { "Male": "f1cdfb4a-bf7d-4e83-916e-8f0802278315", "Female": "002622d8-19d0-4567-a16a-f99c7397c062" },
-            "ko": { "Male": "af6beeea-d732-40b6-8292-73af0035b740", "Female": "15628352-2ede-4f1b-89e6-ceda0c983fbc" },
-            "fr": { "Male": "0418348a-0ca2-4e90-9986-800fb8b3bbc0", "Female": "a8a1eb38-5f15-4c1d-8722-7ac0f329727d" },
-            "ja": { "Male": "e8a863c6-22c7-4671-86ca-91cacffc038d", "Female": "2b568345-1d48-4047-b25f-7baccf842eb0" },
-            "pt": { "Male": "6a360542-a117-4ed5-9e09-e8bf9b05eabb", "Female": "d4b44b9a-82bc-4b65-b456-763fce4c52f9" }
+            "nl": { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" }
         };
 
         const firebaseConfig = { apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs", authDomain: "macx-5feca.firebaseapp.com", databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "macx-5feca" };
@@ -205,18 +170,16 @@
         const fullLangList = ["Abkhaz","Acehnese","Acholi","Afar","Afrikaans","Albanian","Alur","Amharic","Arabic","Armenian","Assamese","Avar","Awadhi","Aymara","Azerbaijani","Balinese","Baluchi","Bambara","Baoulé","Bashkir","Basque","Batak Karo","Batak Simalungun","Batak Toba","Belarusian","Bemba","Bengali","Betawi","Bhojpuri","Bikol","Bosnian","Breton","Bulgarian","Buryat","Cantonese","Catalan","Cebuano","Chamorro","Chechen","Chichewa","Chinese (Simplified)","Chinese (Traditional)","Chuukese","Chuvash","Corsican","Crimean Tatar (Cyrillic)","Crimean Tatar (Latin)","Croatian","Czech","Danish","Dari","Dhivehi","Dinka","Dogri","Dombe","Dutch","Dyula","Dzongkha","English","Esperanto","Estonian","Ewe","Faroese","Fijian","Filipino","Finnish","Fon","French","French (Canada)","Frisian","Friulian","Fulani","Ga","Galician","Georgian","German","Greek","Guarani","Gujarati","Haitian Creole","Hakha Chin","Hausa","Hawaiian","Hebrew","Hiligaynon","Hindi","Hmong","Hungarian","Hunsrik","Iban","Icelandic","Igbo","Ilocano","Indonesian","Inuktut (Latin)","Inuktut (Syllabics)","Irish","Italian","Jamaican Patois","Japanese","Javanese","Jingpo","Kalaallisut","Kannada","Kanuri","Kapampangan","Kazakh","Khasi","Khmer","Kiga","Kikongo","Kinyarwanda","Kituba","Kokborok","Komi","Konkani","Korean","Krio","Kurdish (Kurmanji)","Kurdish (Sorani)","Kyrgyz","Lao","Latgalian","Latin","Latvian","Ligurian","Limburgish","Lingala","Lithuanian","Lombard","Luganda","Luo","Luxembourgish","Macedonian","Madurese","Maithili","Makassar","Malagasy","Malay","Malay (Jawi)","Malayalam","Maltese","Mam","Manx","Maori","Marathi","Marshallese","Marwadi","Mauritian Creole","Meadow Mari","Meiteilon (Manipuri)","Minang","Mizo","Mongolian","Myanmar (Burmese)","Nahuatl (Eastern Huasteca)","Ndau","Ndebele (South)","Nepalbhasa (Newari)","Nepali","NKo","Norwegian","Nuer","Occitan","Odia (Oriya)","Oromo","Ossetian","Pangasinan","Papiamento","Pashto","Persian","Polish","Portuguese (Brazil)","Portuguese (Portugal)","Punjabi (Gurmukhi)","Punjabi (Shahmukhi)","Quechua","Qʼeqchiʼ","Romani","Romanian","Rundi","Russian","Sami (North)","Samoan","Sango","Sanskrit","Santali (Latin)","Santali (Ol Chiki)","Scots Gaelic","Sepedi","Serbian","Sesotho","Seychellois Creole","Shan","Shona","Sicilian","Silesian","Sindhi","Sinhala","Slovak","Slovenian","Somali","Spanish","Sundanese","Susu","Swahili","Swati","Swedish","Tahitian","Tajik","Tamazight","Tamazight (Tifinagh)","Tamil","Tatar","Telugu","Tetum","Thai","Tibetan","Tigrinya","Tiv","Tok Pisin","Tongan","Tshiluba","Tsonga","Tswana","Tulu","Tumbuka","Turkish","Turkmen","Tuvan","Twi","Udmurt","Ukrainian","Urdu","Uyghur","Uzbek","Venda","Venetian","Vietnamese","Waray","Welsh","Wolof","Xhosa","Yakut","Yiddish","Yoruba","Yucatec Maya","Zapotec","Zulu"];
 
         // --- SESSION STATE ---
-        let myUserId = localStorage.getItem('succes_uid');
-        if(!myUserId) { myUserId = `user-${Math.floor(Math.random()*999999)}`; localStorage.setItem('succes_uid', myUserId); }
-        
+        let myUserId = `user-${Math.floor(Math.random()*99999)}`;
         let userData = { name: '', room: 'SUCCESS', gender: 'Male', language: 'nl' };
-        let isRec = false, mediaRec, dgConnection, tStart, tInt, activeSegmentRef = null;
+        let isRec = false, mediaRec, dgSocket, aCtx, aFr, tStart, tInt, activeSegmentRef = null;
         let ttsEnabled = false, joinTimestamp = null, audioQueue = [], isAudioPlaying = false;
 
         const ui = {
             modal: document.getElementById('gateway-modal'), delModal: document.getElementById('delete-modal'), app: document.getElementById('app-container'), langSelect: document.getElementById('user-lang'), msgWin: document.getElementById('msg-stream'), txtIn: document.getElementById('text-input'), sendBtn: document.getElementById('send-btn'), micBtn: document.getElementById('mic-btn'), voiceOver: document.getElementById('voice-overlay'), timer: document.getElementById('timer'), viz: document.getElementById('viz'), ttsBtn: document.getElementById('tts-toggle-btn'), ttsIcon: document.getElementById('tts-icon'), logout: document.getElementById('logout-btn')
         };
 
-        // --- SEQUENTIAL AUDIO QUEUE (TTS) ---
+        // --- SEQUENTIAL AUDIO QUEUE ---
         async function processAudioQueue() {
             if (isAudioPlaying || audioQueue.length === 0) return;
             isAudioPlaying = true;
@@ -224,20 +187,11 @@
             try {
                 const pair = VOICE_MAP[item.lang] || DEFAULT_VOICES;
                 const vId = pair[item.gender] || DEFAULT_VOICES[item.gender];
-                
                 const res = await fetch("https://api.cartesia.ai/tts/bytes", {
                     method: "POST",
                     headers: { "Cartesia-Version": "2025-04-16", "X-API-Key": CARTESIA_KEY, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        "model_id": "sonic-3-latest",
-                        "transcript": `<emotion value="${item.emotion || 'neutral'}" />${item.text}`,
-                        "voice": { "mode": "id", "id": vId },
-                        "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 },
-                        "speed": "normal",
-                        "generation_config": { "speed": 1, "volume": 1, "emotion": item.emotion || "neutral" }
-                    })
+                    body: JSON.stringify({ "model_id": "sonic-3-latest", "transcript": `<emotion value="${item.emotion || 'neutral'}" />${item.text}`, "voice": { "mode": "id", "id": vId }, "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 }, "speed": "normal", "generation_config": { "speed": 1, "volume": 1, "emotion": item.emotion || "neutral" } })
                 });
-
                 if (res.ok) {
                     const audio = new Audio(URL.createObjectURL(await res.blob()));
                     audio.onended = () => { isAudioPlaying = false; processAudioQueue(); };
@@ -246,9 +200,9 @@
             } catch (e) { isAudioPlaying = false; processAudioQueue(); }
         }
 
-        // --- UTILS & CLEANING ---
+        // --- FILLER CLEANING ---
         function cleanTranscript(t) { return t.replace(/\b(uhm|um|ah|huh|er|eh|hm|uh)\b/gi, "").replace(/\s\s+/g, ' ').trim(); }
-        
+
         async function translate(text, from, to) {
             if (from === to) return text;
             try {
@@ -257,24 +211,13 @@
             } catch (e) { return text; }
         }
 
-        function getEmotion(text) {
-            const l = text.toLowerCase();
-            if (l.includes("happy") || l.includes("good")) return "happy";
-            if (l.includes("sad") || l.includes("bad")) return "sad";
-            if (l.includes("angry") || l.includes("mad")) return "angry";
-            if (l.includes("sorry")) return "apologetic";
-            if (l.includes("wow")) return "amazed";
-            return "neutral"; 
-        }
-
-        // --- FIREBASE OPS ---
+        // --- FIREBASE SYNC ---
         function pushMsg(raw, isFinal = true) {
             const text = cleanTranscript(raw); if (!text) return;
-            const emotion = isFinal ? getEmotion(text) : "neutral";
+            const emotion = "content"; // Default synthesis for demo
             const path = isFinal ? `chats/${userData.room}/messages` : `chats/${userData.room}/drafts`;
             const tRef = isFinal ? push(ref(db, path)) : (activeSegmentRef || push(ref(db, path)));
             if (!isFinal) activeSegmentRef = tRef;
-
             set(tRef, { text, senderId: myUserId, senderName: userData.name, gender: userData.gender, lang: userData.language, emotion, emoji: EMOTIONS[emotion] || '😐', timestamp: Date.now() });
             if (isFinal && activeSegmentRef) { remove(activeSegmentRef); activeSegmentRef = null; }
         }
@@ -297,90 +240,34 @@
         }
 
         function renderBubble(msg, isLive = false) {
-            if (msg.senderId === myUserId) return;
+            const isMe = msg.senderId === myUserId;
             const div = document.createElement('div');
-            div.className = `flex justify-start ${isLive ? 'is-live opacity-50' : ''}`;
-            const display = (!isLive && msg.translated) ? msg.translated : msg.text;
-            
-            div.innerHTML = `
-                <div class="bg-white rounded-lg rounded-tl-none p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2">
-                    <div class="flex-1">
-                        <p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p>
-                        <div class="flex items-center gap-1">
-                            <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span>
-                        </div>
-                    </div>
-                    <div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div>
-                </div>`;
+            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} ${isLive ? 'is-live opacity-50' : ''}`;
+            const display = (!isMe && msg.translated) ? msg.translated : msg.text;
+            div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div></div>`;
             ui.msgWin.appendChild(div); ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
         }
 
-        // --- NEW DEEPGRAM LOGIC WITH SDK ---
+        // --- ROBUST CONTINUOUS DEEPGRAM ---
         async function startVoice() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 isRec = true; ui.voiceOver.classList.remove('hidden'); setupViz(stream);
-                
                 tStart = Date.now();
                 tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart)/1000); ui.timer.innerText = `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }, 1000);
-
-                const deepgram = createClient(DEEPGRAM_API_KEY);
-
-                // Prepare Keywords from Lexicon if Dutch
-                let keywords = [];
-                if(userData.language === 'nl') {
-                    // Map lexicon words to Deepgram keywords (boosting them)
-                    keywords = DUTCH_LEXICON_DATA.map(item => item.text);
-                }
-
-                dgConnection = deepgram.listen.live({
-                    model: 'nova-3',
-                    language: userData.language,
-                    smart_format: true,
-                    interim_results: true,
-                    endpointing: 500, // Faster endpointing for chat
-                    punctuate: true,
-                    vad_events: true,
-                    keywords: keywords // Inject Robust Dutch terms
-                });
-
-                dgConnection.on(LiveTranscriptionEvents.Open, () => {
-                    console.log("Deepgram Connected");
+                const dgClient = createClient(DEEPGRAM_KEY);
+                dgSocket = dgClient.listen.live({ model: "nova-3", language: userData.language, smart_format: true, interim_results: true, endpointing: 1000, punctuate: true });
+                dgSocket.on(LiveTranscriptionEvents.Open, () => {
                     mediaRec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                    mediaRec.ondataavailable = (e) => {
-                        if (e.data.size > 0 && dgConnection.getReadyState() === 1) {
-                            dgConnection.send(e.data);
-                        }
-                    };
-                    mediaRec.start(200); // Send chunks every 200ms
+                    mediaRec.ondataavailable = (e) => { if (e.data.size > 0 && dgSocket.getReadyState() === 1) dgSocket.send(e.data); };
+                    mediaRec.start(250);
                 });
-
-                dgConnection.on(LiveTranscriptionEvents.Transcript, (data) => {
-                    if (data.type === 'SpeechStarted') return;
-                    const alt = data.channel?.alternatives?.[0];
-                    if (alt && alt.transcript) {
-                        pushMsg(alt.transcript, data.is_final);
-                    }
-                });
-
-                dgConnection.on(LiveTranscriptionEvents.Error, (err) => {
-                    console.error("DG Error", err);
-                    stopVoice(false);
-                });
-
-            } catch (e) { 
-                console.error(e); 
-                stopVoice(false); 
-            }
+                dgSocket.on(LiveTranscriptionEvents.Transcript, (d) => { const txt = d.channel.alternatives[0].transcript; if (txt.trim()) pushMsg(txt, d.is_final); });
+            } catch (e) { stopVoice(false); }
         }
 
         function stopVoice(save) {
-            isRec = false; 
-            mediaRec?.stop(); 
-            dgConnection?.finish(); // Close socket cleanly
-            clearInterval(tInt); 
-            ui.voiceOver.classList.add('hidden'); 
-            ui.timer.innerText = "00:00";
+            isRec = false; mediaRec?.stop(); dgSocket?.finish(); clearInterval(tInt); ui.voiceOver.classList.add('hidden'); ui.timer.innerText = "00:00";
             if (!save && activeSegmentRef) { remove(activeSegmentRef); activeSegmentRef = null; }
         }
 
@@ -389,12 +276,11 @@
             if(!isAuto) {
                 const n = document.getElementById('user-display-name').value.trim();
                 const r = document.getElementById('room-code').value.trim().toUpperCase();
-                if(!n) return alert("Enter Name");
+                if(!n) return alert("Display Name Required");
                 userData.name = n.substring(0,8); userData.room = r || 'SUCCESS';
                 userData.gender = document.getElementById('user-gender').value;
                 userData.language = ui.langSelect.value;
-                joinTimestamp = Date.now();
-                localStorage.setItem('succes_session', JSON.stringify({ ...userData, joinTime: joinTimestamp }));
+                joinTimestamp = Date.now(); localStorage.setItem('orbit_session', JSON.stringify({ ...userData, joinTime: joinTimestamp }));
             }
             ui.modal.classList.add('hidden'); ui.app.classList.remove('opacity-0');
             document.getElementById('room-header-name').innerText = userData.room;
@@ -411,32 +297,15 @@
             }; dr();
         }
 
-        // FULL LANGUAGE LIST POPULATION
         fullLangList.forEach(l => {
             const opt = document.createElement('option');
-            // Language Map for known Deepgram/Google Translate codes
-            const map = { 
-                "Dutch": "nl", "Tagalog": "tl", "English": "en", "Spanish": "es", "French": "fr", 
-                "German": "de", "Arabic": "ar", "Korean": "ko", "Japanese": "ja", "Portuguese": "pt", 
-                "Tamil": "ta", "Telugu": "te", "Hindi": "hi", "Italian": "it", "Russian": "ru",
-                "Swedish": "sv", "Turkish": "tr", "Polish": "pl", "Indonesian": "id", "Vietnamese": "vi",
-                "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW"
-            };
-            // Default to 'en' if not explicitly mapped, but prioritize our map
-            opt.value = map[l] || "en"; 
-            
-            // Special text for Dutch
-            opt.text = l === "Dutch" ? "Dutch Flemish" : l;
-            
-            // Default Select Dutch
-            if(l === "Dutch") opt.selected = true; 
-            
-            ui.langSelect.add(opt);
+            const map = { "Dutch": "nl", "Tagalog": "tl", "English": "en", "Spanish": "es", "French": "fr", "German": "de", "Arabic": "ar", "Korean": "ko", "Japanese": "ja", "Portuguese": "pt", "Tamil": "ta", "Telugu": "te", "Hindi": "hi" };
+            opt.value = map[l] || "en"; opt.text = l; if(l === "Dutch") opt.selected = true; ui.langSelect.add(opt);
         });
 
         window.toggleDeleteModal = (show) => ui.delModal.classList.toggle('hidden', !show);
         document.getElementById('confirm-delete-btn').onclick = () => { remove(ref(db, `chats/${userData.room}`)); toggleDeleteModal(false); ui.msgWin.innerHTML = ''; };
-        ui.logout.onclick = () => { localStorage.removeItem('succes_session'); localStorage.removeItem('succes_uid'); location.reload(); };
+        ui.logout.onclick = () => { localStorage.removeItem('orbit_session'); location.reload(); };
         document.getElementById('btn-connect').onclick = () => connect(false);
         ui.ttsBtn.onclick = () => { ttsEnabled = !ttsEnabled; ui.ttsIcon.className = ttsEnabled ? "fa-solid fa-volume-high text-[#008069]" : "fa-solid fa-volume-xmark text-gray-400"; if(ttsEnabled) processAudioQueue(); };
         ui.txtIn.oninput = () => { const v = ui.txtIn.value.trim(); ui.sendBtn.classList.toggle('hidden', v===""); ui.micBtn.classList.toggle('hidden', v!==""); };
@@ -445,7 +314,7 @@
         document.getElementById('stop-voice').onclick = () => stopVoice(true);
         document.getElementById('cancel-voice').onclick = () => stopVoice(false);
 
-        const saved = localStorage.getItem('succes_session');
+        const saved = localStorage.getItem('orbit_session');
         if(saved) { const d = JSON.parse(saved); userData = d; joinTimestamp = d.joinTime; connect(true); }
     </script>
 </body>
