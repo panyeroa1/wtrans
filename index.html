@@ -18,7 +18,7 @@
             height: 100vh; 
             margin: 0; 
             overflow: hidden; 
-            touch-action: manipulation; /* Disables double-tap zoom */
+            touch-action: manipulation; 
         }
         
         /* Strict Input Font Size to prevent iOS Zoom */
@@ -52,7 +52,7 @@
     <div id="delete-modal" class="fixed inset-0 z-[110] bg-black/60 flex items-center justify-center p-6 hidden">
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in duration-200">
             <h3 class="text-lg font-bold text-gray-800">Clear Succes Class?</h3>
-            <p class="text-sm text-gray-500 mt-2">Delete all messages in this room? This cannot be undone.</p>
+            <p class="text-sm text-gray-500 mt-2">Delete all conversation history in this room? This cannot be undone.</p>
             <div class="flex justify-end gap-3 mt-6">
                 <button onclick="toggleDeleteModal(false)" class="px-4 py-2 text-sm font-semibold text-gray-400">Cancel</button>
                 <button id="confirm-delete-btn" class="px-4 py-2 text-sm font-semibold bg-red-500 text-white rounded-lg">Delete All</button>
@@ -120,7 +120,7 @@
                     <div id="sidebar-avatar" class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shrink-0">SU</div>
                     <div class="flex-1 overflow-hidden">
                         <h3 id="sidebar-room-name" class="font-semibold text-gray-800 text-sm">SUCCESS</h3>
-                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Continuous Segmenting Active</p>
+                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic truncate">Sender Hidden | Receiver Active</p>
                     </div>
                 </div>
             </div>
@@ -191,35 +191,19 @@
             "pt": { "Male": "6a360542-a117-4ed5-9e09-e8bf9b05eabb", "Female": "d4b44b9a-82bc-4b65-b456-763fce4c52f9" },
             "ta": { "Female": "25d2c432-139c-4035-bfd6-9baaabcdd006" },
             "te": { "Female": "07bc462a-c644-49f1-baf7-82d5599131be" },
-            // Fallback for others to Default
             "nl": { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" }
         };
 
         const firebaseConfig = { apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs", authDomain: "macx-5feca.firebaseapp.com", databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "macx-5feca" };
         const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 
-        // --- EMOTION MAPPING ---
-        const EMOTIONS = {
-            // Core
-            "neutral": "😐", "angry": "😠", "excited": "🤩", "content": "😊", "sad": "😢", "scared": "😨",
-            // Extended
-            "happy": "😀", "enthusiastic": "🙌", "elated": "🥳", "euphoric": "🌈", "triumphant": "🏆", 
-            "amazed": "😲", "surprised": "😮", "flirtatious": "😏", "joking": "😂", "comedic": "🎭", 
-            "curious": "🤔", "peaceful": "🧘", "serene": "🎐", "calm": "😌", "grateful": "🙏", 
-            "affectionate": "🥰", "trust": "🤝", "sympathetic": "🥺", "anticipation": "⌛", "mysterious": "🕵️", 
-            "mad": "😡", "outraged": "🤬", "frustrated": "😣", "agitated": "😖", "threatened": "🛡️", 
-            "disgusted": "🤢", "contempt": "😒", "envious": "💹", "sarcastic": "🙄", "ironic": "🙃", 
-            "dejected": "😞", "melancholic": "🥀", "disappointed": "😔", "hurt": "🤕", "guilty": "😰", 
-            "bored": "😴", "tired": "🥱", "rejected": "🚫", "nostalgic": "🕰️", "wistful": "🍃", 
-            "apologetic": "🙇", "hesitant": "😟", "insecure": "🫣", "confused": "😵‍💫", "resigned": "🏳️", 
-            "anxious": "😟", "panicked": "😱", "alarmed": "🚨", "proud": "🦁", "confident": "😎", 
-            "distant": "🧊", "skeptical": "🤨", "contemplative": "🧐", "determined": "✊"
-        };
-
+        const EMOTIONS = { "neutral": "😐", "angry": "😠", "excited": "🤩", "content": "😊", "sad": "😢", "scared": "😨", "happy": "😀", "curious": "🤔", "amazed": "😲" };
         const fullLangList = ["Abkhaz","Acehnese","Acholi","Afar","Afrikaans","Albanian","Alur","Amharic","Arabic","Armenian","Assamese","Avar","Awadhi","Aymara","Azerbaijani","Balinese","Baluchi","Bambara","Baoulé","Bashkir","Basque","Batak Karo","Batak Simalungun","Batak Toba","Belarusian","Bemba","Bengali","Betawi","Bhojpuri","Bikol","Bosnian","Breton","Bulgarian","Buryat","Cantonese","Catalan","Cebuano","Chamorro","Chechen","Chichewa","Chinese (Simplified)","Chinese (Traditional)","Chuukese","Chuvash","Corsican","Crimean Tatar (Cyrillic)","Crimean Tatar (Latin)","Croatian","Czech","Danish","Dari","Dhivehi","Dinka","Dogri","Dombe","Dutch","Dyula","Dzongkha","English","Esperanto","Estonian","Ewe","Faroese","Fijian","Filipino","Finnish","Fon","French","French (Canada)","Frisian","Friulian","Fulani","Ga","Galician","Georgian","German","Greek","Guarani","Gujarati","Haitian Creole","Hakha Chin","Hausa","Hawaiian","Hebrew","Hiligaynon","Hindi","Hmong","Hungarian","Hunsrik","Iban","Icelandic","Igbo","Ilocano","Indonesian","Inuktut (Latin)","Inuktut (Syllabics)","Irish","Italian","Jamaican Patois","Japanese","Javanese","Jingpo","Kalaallisut","Kannada","Kanuri","Kapampangan","Kazakh","Khasi","Khmer","Kiga","Kikongo","Kinyarwanda","Kituba","Kokborok","Komi","Konkani","Korean","Krio","Kurdish (Kurmanji)","Kurdish (Sorani)","Kyrgyz","Lao","Latgalian","Latin","Latvian","Ligurian","Limburgish","Lingala","Lithuanian","Lombard","Luganda","Luo","Luxembourgish","Macedonian","Madurese","Maithili","Makassar","Malagasy","Malay","Malay (Jawi)","Malayalam","Maltese","Mam","Manx","Maori","Marathi","Marshallese","Marwadi","Mauritian Creole","Meadow Mari","Meiteilon (Manipuri)","Minang","Mizo","Mongolian","Myanmar (Burmese)","Nahuatl (Eastern Huasteca)","Ndau","Ndebele (South)","Nepalbhasa (Newari)","Nepali","NKo","Norwegian","Nuer","Occitan","Odia (Oriya)","Oromo","Ossetian","Pangasinan","Papiamento","Pashto","Persian","Polish","Portuguese (Brazil)","Portuguese (Portugal)","Punjabi (Gurmukhi)","Punjabi (Shahmukhi)","Quechua","Qʼeqchiʼ","Romani","Romanian","Rundi","Russian","Sami (North)","Samoan","Sango","Sanskrit","Santali (Latin)","Santali (Ol Chiki)","Scots Gaelic","Sepedi","Serbian","Sesotho","Seychellois Creole","Shan","Shona","Sicilian","Silesian","Sindhi","Sinhala","Slovak","Slovenian","Somali","Spanish","Sundanese","Susu","Swahili","Swati","Swedish","Tahitian","Tajik","Tamazight","Tamazight (Tifinagh)","Tamil","Tatar","Telugu","Tetum","Thai","Tibetan","Tigrinya","Tiv","Tok Pisin","Tongan","Tshiluba","Tsonga","Tswana","Tulu","Tumbuka","Turkish","Turkmen","Tuvan","Twi","Udmurt","Ukrainian","Urdu","Uyghur","Uzbek","Venda","Venetian","Vietnamese","Waray","Welsh","Wolof","Xhosa","Yakut","Yiddish","Yoruba","Yucatec Maya","Zapotec","Zulu"];
 
         // --- SESSION STATE ---
-        let myUserId = `user-${Math.floor(Math.random()*99999)}`;
+        let myUserId = localStorage.getItem('succes_uid');
+        if(!myUserId) { myUserId = `user-${Math.floor(Math.random()*999999)}`; localStorage.setItem('succes_uid', myUserId); }
+        
         let userData = { name: '', room: 'SUCCESS', gender: 'Male', language: 'nl' };
         let isRec = false, mediaRec, dgSocket, aCtx, aFr, tStart, tInt, activeSegmentRef = null;
         let ttsEnabled = false, joinTimestamp = null, audioQueue = [], isAudioPlaying = false;
@@ -237,7 +221,7 @@
                 const pair = VOICE_MAP[item.lang] || DEFAULT_VOICES;
                 const vId = pair[item.gender] || DEFAULT_VOICES[item.gender];
                 
-                const response = await fetch("https://api.cartesia.ai/tts/bytes", {
+                const res = await fetch("https://api.cartesia.ai/tts/bytes", {
                     method: "POST",
                     headers: { "Cartesia-Version": "2025-04-16", "X-API-Key": CARTESIA_KEY, "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -250,9 +234,8 @@
                     })
                 });
 
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const audio = new Audio(URL.createObjectURL(blob));
+                if (res.ok) {
+                    const audio = new Audio(URL.createObjectURL(await res.blob()));
                     audio.onended = () => { isAudioPlaying = false; processAudioQueue(); };
                     await audio.play();
                 } else { isAudioPlaying = false; processAudioQueue(); }
@@ -273,7 +256,6 @@
         // --- EMOTION DETECTION ---
         function getEmotion(text) {
             const l = text.toLowerCase();
-            // Basic keyword check for demonstration (in production, use Deepgram sentiment)
             if (l.includes("happy") || l.includes("good")) return "happy";
             if (l.includes("sad") || l.includes("bad")) return "sad";
             if (l.includes("angry") || l.includes("mad")) return "angry";
@@ -312,11 +294,24 @@
         }
 
         function renderBubble(msg, isLive = false) {
-            const isMe = msg.senderId === myUserId;
+            // FILTER: IF SENDER IS ME, DO NOT RENDER (Hide Sent Messages)
+            if (msg.senderId === myUserId) return;
+
             const div = document.createElement('div');
-            div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} ${isLive ? 'is-live opacity-50' : ''}`;
+            // Always left aligned since we are only showing received messages
+            div.className = `flex justify-start ${isLive ? 'is-live opacity-50' : ''}`;
             const display = (!isMe && msg.translated) ? msg.translated : msg.text;
-            div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div></div>`;
+            
+            div.innerHTML = `
+                <div class="bg-white rounded-lg rounded-tl-none p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2">
+                    <div class="flex-1">
+                        <p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${display}</p>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span>
+                        </div>
+                    </div>
+                    <div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div>
+                </div>`;
             ui.msgWin.appendChild(div); ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
         }
 
@@ -389,7 +384,7 @@
 
         window.toggleDeleteModal = (show) => ui.delModal.classList.toggle('hidden', !show);
         document.getElementById('confirm-delete-btn').onclick = () => { remove(ref(db, `chats/${userData.room}`)); toggleDeleteModal(false); ui.msgWin.innerHTML = ''; };
-        ui.logout.onclick = () => { localStorage.removeItem('succes_session'); location.reload(); };
+        ui.logout.onclick = () => { localStorage.removeItem('succes_session'); localStorage.removeItem('succes_uid'); location.reload(); };
         document.getElementById('btn-connect').onclick = () => connect(false);
         ui.ttsBtn.onclick = () => { ttsEnabled = !ttsEnabled; ui.ttsIcon.className = ttsEnabled ? "fa-solid fa-volume-high text-[#008069]" : "fa-solid fa-volume-xmark text-gray-400"; if(ttsEnabled) processAudioQueue(); };
         ui.txtIn.oninput = () => { const v = ui.txtIn.value.trim(); ui.sendBtn.classList.toggle('hidden', v===""); ui.micBtn.classList.toggle('hidden', v!==""); };
