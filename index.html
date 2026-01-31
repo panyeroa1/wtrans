@@ -344,10 +344,22 @@
 
                 if (response.ok) {
                     const blob = await response.blob();
-                    const audio = new Audio(URL.createObjectURL(blob));
+                    const url = URL.createObjectURL(blob);
+                    const audio = new Audio(url);
+
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.metadata = new MediaMetadata({
+                            title: `Message from ${item.gender}`,
+                            artist: 'ORBIT TTS',
+                            album: 'Live Chat',
+                            artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/3536/3536505.png', sizes: '512x512', type: 'image/png' }]
+                        });
+                        navigator.mediaSession.playbackState = 'playing';
+                    }
 
                     const finish = () => {
                         isAudioPlaying = false;
+                        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'none';
                         processAudioQueue();
                     };
 
@@ -602,6 +614,16 @@
                 tStart = Date.now();
                 if (mode === 'stream') {
                     tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart) / 1000); ui.timer.innerText = `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }, 1000);
+                }
+
+                // Wake Lock for Stream
+                if (mode === 'stream' && 'wakeLock' in navigator) {
+                    try { await navigator.wakeLock.request('screen'); } catch (err) { console.log('Wake Lock error:', err); }
+                }
+
+                // Wake Lock for Stream
+                if (mode === 'stream' && 'wakeLock' in navigator) {
+                    try { await navigator.wakeLock.request('screen'); } catch (err) { console.log('Wake Lock error:', err); }
                 }
 
                 const client = createClient(DEEPGRAM_KEY);
