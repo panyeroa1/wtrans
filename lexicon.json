@@ -1,0 +1,634 @@
+[
+  {
+    "text": "maandag",
+    "pronunciation": "<<m|aː|n|d|ɑ|x>>"
+  },
+  {
+    "text": "maatregel",
+    "pronunciation": "<<m|aː|t|r|eː|ɣ|ə|l>>"
+  },
+  {
+    "text": "machine",
+    "pronunciation": "<<m|ɑ|ʃ|i|n|ə>>"
+  },
+  {
+    "text": "meisje",
+    "pronunciation": "<<m|ɛi̯|ʃ|ə>>"
+  },
+  {
+    "text": "melk",
+    "pronunciation": "<<m|ɛ|l|k>>"
+  },
+  {
+    "text": "meneer",
+    "pronunciation": "<<m|ə|n|eː|r>>"
+  },
+  {
+    "text": "mes",
+    "pronunciation": "<<m|ɛ|s>>"
+  },
+  {
+    "text": "meteen",
+    "pronunciation": "<<m|ə|t|eː|n>>"
+  },
+  {
+    "text": "meubel",
+    "pronunciation": "<<m|øː|b|ə|l>>"
+  },
+  {
+    "text": "middag",
+    "pronunciation": "<<m|ɪ|d|ɑ|x>>"
+  },
+  {
+    "text": "midden",
+    "pronunciation": "<<m|ɪ|d|ə>>"
+  },
+  {
+    "text": "milieu",
+    "pronunciation": "<<m|ɪ|l|j|øː>>"
+  },
+  {
+    "text": "miljoen",
+    "pronunciation": "<<m|ɪ|l|j|u|n>>"
+  },
+  {
+    "text": "minuut",
+    "pronunciation": "<<m|i|n|y|t>>"
+  },
+  {
+    "text": "missen",
+    "pronunciation": "<<m|ɪ|s|ə|n>>"
+  },
+  {
+    "text": "moeder",
+    "pronunciation": "<<m|u|d|ə|r>>"
+  },
+  {
+    "text": "moeilijk",
+    "pronunciation": "<<m|u|j|l|ə|k>>"
+  },
+  {
+    "text": "mogelijkheid",
+    "pronunciation": "<<m|oː|ɣ|ə|l|ə|k|h|ɛi̯|t>>"
+  },
+  {
+    "text": "moment",
+    "pronunciation": "<<m|oː|m|ɛ|n|t>>"
+  },
+  {
+    "text": "mond",
+    "pronunciation": "<<m|ɔ|n|t>>"
+  },
+  {
+    "text": "mooi",
+    "pronunciation": "<<m|oː|i>>"
+  },
+  {
+    "text": "moord",
+    "pronunciation": "<<m|oː|r|t>>"
+  },
+  {
+    "text": "morgen",
+    "pronunciation": "<<m|ɔ|r|ɣ|ə>>"
+  },
+  {
+    "text": "motor",
+    "pronunciation": "<<m|oː|t|ɔ|r>>"
+  },
+  {
+    "text": "muis",
+    "pronunciation": "<<m|œy̯|s>>"
+  },
+  {
+    "text": "museum",
+    "pronunciation": "<<m|y|z|eː|ʏ|m>>"
+  },
+  {
+    "text": "muur",
+    "pronunciation": "<<m|yː|r>>"
+  },
+  {
+    "text": "muziek",
+    "pronunciation": "<<m|y|z|i|k>>"
+  },
+  {
+    "text": "naam",
+    "pronunciation": "<<n|aː|m>>"
+  },
+  {
+    "text": "naast",
+    "pronunciation": "<<n|aː|s|t>>"
+  },
+  {
+    "text": "nacht",
+    "pronunciation": "<<n|ɑ|x|t>>"
+  },
+  {
+    "text": "nadat",
+    "pronunciation": "<<n|aː|d|ɑ|t>>"
+  },
+  {
+    "text": "nagel",
+    "pronunciation": "<<n|aː|ɣ|ə|l>>"
+  },
+  {
+    "text": "namelijk",
+    "pronunciation": "<<n|aː|m|ə|l|ə|k>>"
+  },
+  {
+    "text": "nat",
+    "pronunciation": "<<n|ɑ|t>>"
+  },
+  {
+    "text": "natuur",
+    "pronunciation": "<<n|a|t|yː|r>>"
+  },
+  {
+    "text": "natuurlijk",
+    "pronunciation": "<<n|a|t|yː|r|l|ə|k>>"
+  },
+  {
+    "text": "neer",
+    "pronunciation": "<<n|eː|r>>"
+  },
+  {
+    "text": "negen",
+    "pronunciation": "<<n|eː|ɣ|ə>>"
+  },
+  {
+    "text": "nek",
+    "pronunciation": "<<n|ɛ|k>>"
+  },
+  {
+    "text": "nemen",
+    "pronunciation": "<<n|eː|m|ə|n>>"
+  },
+  {
+    "text": "nergens",
+    "pronunciation": "<<n|ɛ|r|ɣ|ə|n|s>>"
+  },
+  {
+    "text": "netjes",
+    "pronunciation": "<<n|ɛ|t|j|ə|s>>"
+  },
+  {
+    "text": "neus",
+    "pronunciation": "<<n|øː|s>>"
+  },
+  {
+    "text": "niemand",
+    "pronunciation": "<<n|i|m|ɑ|n|t>>"
+  },
+  {
+    "text": "nieuws",
+    "pronunciation": "<<n|i|u|s>>"
+  },
+  {
+    "text": "niveau",
+    "pronunciation": "<<n|i|v|oː>>"
+  },
+  {
+    "text": "noch",
+    "pronunciation": "<<n|ɔ|x>>"
+  },
+  {
+    "text": "noemen",
+    "pronunciation": "<<n|u|m|ə|n>>"
+  },
+  {
+    "text": "nood",
+    "pronunciation": "<<n|oː|t>>"
+  },
+  {
+    "text": "nooit",
+    "pronunciation": "<<n|oː|i̯|t>>"
+  },
+  {
+    "text": "noorden",
+    "pronunciation": "<<n|oː|r|d|ə>>"
+  },
+  {
+    "text": "normaal",
+    "pronunciation": "<<n|ɔ|r|m|aː|l>>"
+  },
+  {
+    "text": "nummer",
+    "pronunciation": "<<n|ʏ|m|ə|r>>"
+  },
+  {
+    "text": "object",
+    "pronunciation": "<<ɔ|b|j|ɛ|k|t>>"
+  },
+  {
+    "text": "oceaan",
+    "pronunciation": "<<oː|s|eː|aː|n>>"
+  },
+  {
+    "text": "ochtend",
+    "pronunciation": "<<ɔ|x|t|ə|n|t>>"
+  },
+  {
+    "text": "oefening",
+    "pronunciation": "<<u|f|ə|n|ɪ|ŋ>>"
+  },
+  {
+    "text": "ofwel",
+    "pronunciation": "<<ɔ|f|w|ɛ|l>>"
+  },
+  {
+    "text": "ogen",
+    "pronunciation": "<<oː|ɣ|ə>>"
+  },
+  {
+    "text": "olie",
+    "pronunciation": "<<oː|l|i>>"
+  },
+  {
+    "text": "omgeving",
+    "pronunciation": "<<ɔ|m|ɣ|eː|v|ɪ|ŋ>>"
+  },
+  {
+    "text": "omhoog",
+    "pronunciation": "<<ɔ|m|h|oː|x>>"
+  },
+  {
+    "text": "omlaag",
+    "pronunciation": "<<ɔ|m|l|aː|x>>"
+  },
+  {
+    "text": "onder",
+    "pronunciation": "<<ɔ|n|d|ə|r>>"
+  },
+  {
+    "text": "onderneming",
+    "pronunciation": "<<ɔ|n|d|ə|r|n|eː|m|ɪ|ŋ>>"
+  },
+  {
+    "text": "onderwijs",
+    "pronunciation": "<<ɔ|n|d|ə|r|w|ɛi̯|s>>"
+  },
+  {
+    "text": "onderzoek",
+    "pronunciation": "<<ɔ|n|d|ə|r|z|u|k>>"
+  },
+  {
+    "text": "ongeluk",
+    "pronunciation": "<<ɔ|n|ɣ|ə|l|ʏ|k>>"
+  },
+  {
+    "text": "ongeveer",
+    "pronunciation": "<<ɔ|n|ɣ|ə|v|eː|r>>"
+  },
+  {
+    "text": "onmiddellijk",
+    "pronunciation": "<<ɔ|n|m|ɪ|d|ə|l|ə|k>>"
+  },
+  {
+    "text": "ontbijt",
+    "pronunciation": "<<ɔ|n|t|b|ɛi̯|t>>"
+  },
+  {
+    "text": "ontdekken",
+    "pronunciation": "<<ɔ|n|t|d|ɛ|k|ə|n>>"
+  },
+  {
+    "text": "onthouden",
+    "pronunciation": "<<ɔ|n|t|h|ɑu̯|d|ə|n>>"
+  },
+  {
+    "text": "ontmoeten",
+    "pronunciation": "<<ɔ|n|t|m|u|t|ə|n>>"
+  },
+  {
+    "text": "ontvangen",
+    "pronunciation": "<<ɔ|n|t|f|ɑ|ŋ|ə|n>>"
+  },
+  {
+    "text": "ontwikkeling",
+    "pronunciation": "<<ɔ|n|t|w|ɪ|k|ə|l|ɪ|ŋ>>"
+  },
+  {
+    "text": "oog",
+    "pronunciation": "<<oː|x>>"
+  },
+  {
+    "text": "ooit",
+    "pronunciation": "<<oː|i̯|t>>"
+  },
+  {
+    "text": "oom",
+    "pronunciation": "<<oː|m>>"
+  },
+  {
+    "text": "oor",
+    "pronunciation": "<<oː|r>>"
+  },
+  {
+    "text": "oordeel",
+    "pronunciation": "<<oː|r|d|eː|l>>"
+  },
+  {
+    "text": "oorlog",
+    "pronunciation": "<<oː|r|l|ɔ|x>>"
+  },
+  {
+    "text": "oorzaak",
+    "pronunciation": "<<oː|r|z|aː|k>>"
+  },
+  {
+    "text": "oost",
+    "pronunciation": "<<oː|s|t>>"
+  },
+  {
+    "text": "opdracht",
+    "pronunciation": "<<ɔ|p|d|r|ɑ|x|t>>"
+  },
+  {
+    "text": "open",
+    "pronunciation": "<<oː|p|ə>>"
+  },
+  {
+    "text": "openbaar",
+    "pronunciation": "<<oː|p|ə|m|b|aː|r>>"
+  },
+  {
+    "text": "opening",
+    "pronunciation": "<<oː|p|ə|n|ɪ|ŋ>>"
+  },
+  {
+    "text": "opleiding",
+    "pronunciation": "<<ɔ|p|l|ɛi̯|d|ɪ|ŋ>>"
+  },
+  {
+    "text": "oplossing",
+    "pronunciation": "<<ɔ|p|l|ɔ|s|ɪ|ŋ>>"
+  },
+  {
+    "text": "opmerken",
+    "pronunciation": "<<ɔ|p|m|ɛ|r|k|ə|n>>"
+  },
+  {
+    "text": "oppassen",
+    "pronunciation": "<<ɔ|p|ɑ|s|ə|n>>"
+  },
+  {
+    "text": "ordenen",
+    "pronunciation": "<<ɔ|r|d|ə|n|ə|n>>"
+  },
+  {
+    "text": "organisatie",
+    "pronunciation": "<<ɔ|r|ɣ|aː|n|i|z|aː|t|s|i>>"
+  },
+  {
+    "text": "oud",
+    "pronunciation": "<<ɑu̯|t>>"
+  },
+  {
+    "text": "ouder",
+    "pronunciation": "<<ɑu̯|d|ə|r>>"
+  },
+  {
+    "text": "overal",
+    "pronunciation": "<<oː|v|ə|r|ɑ|l>>"
+  },
+  {
+    "text": "overeenkomst",
+    "pronunciation": "<<oː|v|ə|r|eː|ŋ|k|ɔ|m|s|t>>"
+  },
+  {
+    "text": "overheid",
+    "pronunciation": "<<oː|v|ə|r|h|ɛi̯|t>>"
+  },
+  {
+    "text": "overleg",
+    "pronunciation": "<<oː|v|ə|r|l|ɛ|x>>"
+  },
+  {
+    "text": "overlijden",
+    "pronunciation": "<<oː|v|ə|r|l|ɛi̯|d|ə|n>>"
+  },
+  {
+    "text": "overtuigen",
+    "pronunciation": "<<oː|v|ə|r|t|œy̯|ɣ|ə|n>>"
+  },
+  {
+    "text": "paard",
+    "pronunciation": "<<p|aː|r|t>>"
+  },
+  {
+    "text": "pagina",
+    "pronunciation": "<<p|aː|ɣ|i|n|aː>>"
+  },
+  {
+    "text": "pak",
+    "pronunciation": "<<p|ɑ|k>>"
+  },
+  {
+    "text": "pakken",
+    "pronunciation": "<<p|ɑ|k|ə|n>>"
+  },
+  {
+    "text": "pan",
+    "pronunciation": "<<p|ɑ|n>>"
+  },
+  {
+    "text": "papier",
+    "pronunciation": "<<p|aː|p|iː|r>>"
+  },
+  {
+    "text": "park",
+    "pronunciation": "<<p|ɑ|r|k>>"
+  },
+  {
+    "text": "partner",
+    "pronunciation": "<<p|ɑ|r|t|n|ə|r>>"
+  },
+  {
+    "text": "pas",
+    "pronunciation": "<<p|ɑ|s>>"
+  },
+  {
+    "text": "passeren",
+    "pronunciation": "<<p|ɑ|s|eː|r|ə|n>>"
+  },
+  {
+    "text": "pen",
+    "pronunciation": "<<p|ɛ|n>>"
+  },
+  {
+    "text": "peper",
+    "pronunciation": "<<p|eː|p|ə|r>>"
+  },
+  {
+    "text": "per",
+    "pronunciation": "<<p|ɛ|r>>"
+  },
+  {
+    "text": "perfect",
+    "pronunciation": "<<p|ɛ|r|f|ɛ|k|t>>"
+  },
+  {
+    "text": "periode",
+    "pronunciation": "<<p|eː|r|i|oː|d|ə>>"
+  },
+  {
+    "text": "persoon",
+    "pronunciation": "<<p|ɛ|r|s|oː|n>>"
+  },
+  {
+    "text": "persoonlijk",
+    "pronunciation": "<<p|ɛ|r|s|oː|n|l|ə|k>>"
+  },
+  {
+    "text": "pijn",
+    "pronunciation": "<<p|ɛi̯|n>>"
+  },
+  {
+    "text": "plaats",
+    "pronunciation": "<<p|l|aː|t|s>>"
+  },
+  {
+    "text": "plaatsen",
+    "pronunciation": "<<p|l|aː|t|s|ə|n>>"
+  },
+  {
+    "text": "plafond",
+    "pronunciation": "<<p|l|aː|f|ɔ|n>>"
+  },
+  {
+    "text": "plan",
+    "pronunciation": "<<p|l|ɑ|n>>"
+  },
+  {
+    "text": "plank",
+    "pronunciation": "<<p|l|ɑ|ŋ|k>>"
+  },
+  {
+    "text": "plant",
+    "pronunciation": "<<p|l|ɑ|n|t>>"
+  },
+  {
+    "text": "plastic",
+    "pronunciation": "<<p|l|ɛ|s|t|ɪ|k>>"
+  },
+  {
+    "text": "plat",
+    "pronunciation": "<<p|l|ɑ|t>>"
+  },
+  {
+    "text": "plek",
+    "pronunciation": "<<p|l|ɛ|k>>"
+  },
+  {
+    "text": "plezier",
+    "pronunciation": "<<p|l|ə|z|iː|r>>"
+  },
+  {
+    "text": "plotseling",
+    "pronunciation": "<<p|l|ɔ|t|s|ə|l|ɪ|ŋ>>"
+  },
+  {
+    "text": "plus",
+    "pronunciation": "<<p|l|ʏ|s>>"
+  },
+  {
+    "text": "poes",
+    "pronunciation": "<<p|u|s>>"
+  },
+  {
+    "text": "poging",
+    "pronunciation": "<<p|oː|ɣ|ɪ|ŋ>>"
+  },
+  {
+    "text": "politie",
+    "pronunciation": "<<p|oː|l|i|t|s|i>>"
+  },
+  {
+    "text": "politiek",
+    "pronunciation": "<<p|oː|l|i|t|i|k>>"
+  },
+  {
+    "text": "poort",
+    "pronunciation": "<<p|oː|r|t>>"
+  },
+  {
+    "text": "populair",
+    "pronunciation": "<<p|oː|p|y|l|ɛː|r>>"
+  },
+  {
+    "text": "positie",
+    "pronunciation": "<<p|oː|z|i|t|s|i>>"
+  },
+  {
+    "text": "post",
+    "pronunciation": "<<p|ɔ|s|t>>"
+  },
+  {
+    "text": "pot",
+    "pronunciation": "<<p|ɔ|t>>"
+  },
+  {
+    "text": "prachtig",
+    "pronunciation": "<<p|r|ɑ|x|t|ə|x>>"
+  },
+  {
+    "text": "praktijk",
+    "pronunciation": "<<p|r|ɑ|k|t|ɛi̯|k>>"
+  },
+  {
+    "text": "precies",
+    "pronunciation": "<<p|r|ə|s|i|s>>"
+  },
+  {
+    "text": "presentatie",
+    "pronunciation": "<<p|r|eː|z|ɛ|n|t|aː|t|s|i>>"
+  },
+  {
+    "text": "prijs",
+    "pronunciation": "<<p|r|ɛi̯|s>>"
+  },
+  {
+    "text": "prins",
+    "pronunciation": "<<p|r|ɪ|n|s>>"
+  },
+  {
+    "text": "prinses",
+    "pronunciation": "<<p|r|ɪ|n|s|ɛ|s>>"
+  },
+  {
+    "text": "proberen",
+    "pronunciation": "<<p|r|oː|b|eː|r|ə|n>>"
+  },
+  {
+    "text": "probleem",
+    "pronunciation": "<<p|r|oː|b|l|eː|m>>"
+  },
+  {
+    "text": "proces",
+    "pronunciation": "<<p|r|oː|s|ɛ|s>>"
+  },
+  {
+    "text": "product",
+    "pronunciation": "<<p|r|oː|d|ʏ|k|t>>"
+  },
+  {
+    "text": "proficiat",
+    "pronunciation": "<<p|r|oː|f|i|s|i|ɑ|t>>"
+  },
+  {
+    "text": "programma",
+    "pronunciation": "<<p|r|oː|ɣ|r|ɑ|m|aː>>"
+  },
+  {
+    "text": "project",
+    "pronunciation": "<<p|r|oː|j|ɛ|k|t>>"
+  },
+  {
+    "text": "publiek",
+    "pronunciation": "<<p|y|b|l|i|k>>"
+  },
+  {
+    "text": "punt",
+    "pronunciation": "<<p|ʏ|n|t>>"
+  }
+]
