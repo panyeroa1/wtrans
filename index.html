@@ -176,7 +176,6 @@
                     <button id="logout-btn" title="Logout" class="hover:text-red-400 transition-colors"><i
                             class="fa-solid fa-right-from-bracket"></i></button>
                     <i class="fa-solid fa-message"></i>
-                    <i class="fa-solid fa-ellipsis-vertical"></i>
                 </div>
             </div>
             <div id="chat-list" class="flex-1 overflow-y-auto">
@@ -215,6 +214,8 @@
                     <button id="tts-toggle-btn"
                         class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl"><i id="tts-icon"
                             class="fa-solid fa-volume-xmark"></i></button>
+                    <button id="share-link-btn" class="text-gray-400 hover:text-blue-500 transition-colors p-2 text-xl"
+                        title="Share Link"><i class="fa-solid fa-share-nodes"></i></button>
                     <button id="clear-chat-btn" class="text-gray-400 hover:text-red-500 transition-colors p-2 text-xl"
                         title="Clear Chat"><i class="fa-solid fa-trash"></i></button>
                 </div>
@@ -242,8 +243,25 @@
 
                     <button id="send-btn" class="hidden text-teal-600 p-1 z-30"><i
                             class="fa-solid fa-paper-plane text-xl"></i></button>
-                    <button id="mic-btn" class="text-gray-500 p-1 z-30"><i
-                            class="fa-solid fa-microphone text-xl"></i></button>
+                    <button id="dictate-btn" class="text-purple-600 p-1 z-30 mx-1 hover:scale-110 transition-transform"
+                        title="Dictate & Send">
+                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+                            <path
+                                d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                        </svg>
+                    </button>
+                    <button id="mic-btn" class="text-gray-500 p-1 z-30 hover:scale-110 transition-transform"
+                        title="Live Stream">
+                        <svg class="w-6 h-6 stroke-current fill-none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3v18" />
+                            <path d="M8 8v8" />
+                            <path d="M4 11v2" />
+                            <path d="M16 8v8" />
+                            <path d="M20 11v2" />
+                        </svg>
+                    </button>
                 </div>
                 <div id="voice-overlay" class="absolute inset-0 bg-[#f0f2f5] z-50 flex items-center px-4 hidden">
                     <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-3"></div>
@@ -262,14 +280,22 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onChildAdded, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onChildAdded, onChildRemoved, onValue, remove, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { createClient, LiveTranscriptionEvents } from 'https://cdn.jsdelivr.net/npm/@deepgram/sdk@3/+esm';
 
         // --- KEYS & CONFIG ---
         const CARTESIA_API_KEY = "sk_car_yWEX9Mp2LwKju8FXyosGhj";
         const CARTESIA_VOICES = { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
         const DEEPGRAM_KEY = '11ee938d032ce7c36c6fa82338274be5e4ada847';
-        const firebaseConfig = { apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs", authDomain: "macx-5feca.firebaseapp.com", databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "macx-5feca" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs",
+            authDomain: "macx-5feca.firebaseapp.com",
+            databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "macx-5feca",
+            storageBucket: "macx-5feca.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890abcdef"
+        };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
@@ -456,16 +482,21 @@
         }
 
         let unsubMsg = null;
+        let unsubRemoved = null;
+
         function bindFirebase(chatId) {
             ui.msgWin.innerHTML = '';
-            // Unsubscribe previous listener if exists
             if (unsubMsg) { unsubMsg(); unsubMsg = null; }
+            if (unsubRemoved) { unsubRemoved(); unsubRemoved = null; }
 
             const messagesRef = ref(db, `chats/${chatId}/messages`);
             const draftsRef = ref(db, `chats/${chatId}/drafts`);
 
             unsubMsg = onChildAdded(messagesRef, async (snap) => {
                 const msg = snap.val();
+                if (!msg) return;
+                msg.id = snap.key;
+
                 if (msg.senderId !== myUserId && msg.timestamp >= joinTimestamp) {
                     msg.translatedText = await translate(msg.text, msg.lang, userData.language);
                     audioQueue.push({ text: msg.translatedText, gender: msg.gender, emotion: msg.emotion });
@@ -474,8 +505,12 @@
                 renderBubble(msg);
             });
 
-            // Note: onValue for drafts is simpler, we just overwrite drafts. 
-            // Ideally we should manage disconnect/cleanup too but for demo this is OK.
+            // Listen for removals
+            unsubRemoved = onChildRemoved(messagesRef, (snap) => {
+                const el = document.getElementById(`msg-${snap.key}`);
+                if (el) el.remove();
+            });
+
             onValue(draftsRef, (snap) => {
                 document.querySelectorAll('.is-live').forEach(el => el.remove());
                 if (snap.val()) Object.entries(snap.val()).forEach(([key, val]) => renderBubble(val, true));
@@ -484,8 +519,13 @@
 
         function renderBubble(msg, isLive = false) {
             const isMe = msg.senderId === myUserId;
+            // Deduplicate
+            if (msg.id && document.getElementById(`msg-${msg.id}`)) return;
+
             const div = document.createElement('div');
             div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} ${isLive ? 'is-live opacity-50' : ''}`;
+            if (msg.id) div.id = `msg-${msg.id}`;
+
             const content = (!isMe && msg.translatedText) ? `${msg.translatedText}` : msg.text;
             div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${content}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div></div>`;
             ui.msgWin.appendChild(div);
@@ -493,21 +533,53 @@
         }
 
         // --- FIXED DEEPGRAM (NO WORDS MISSED) ---
-        async function startVoice() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                isRec = true; ui.voiceOver.classList.remove('hidden'); setupViz(stream);
+        // --- AUDIO MODES ---
+        let recMode = null; // 'stream' or 'dictate'
+        let dictationBuffer = "";
+        let lastInterim = ""; // Fallback if no final result
 
-                // Input Visualizer ON
-                document.getElementById('audio-visualizer').classList.add('active');
-                ui.txtIn.disabled = true;
-                ui.txtIn.placeholder = "Listening...";
+        async function startVoice(mode = 'stream') {
+            try {
+                // Toggle Logic: If actively recording in same mode...
+                if (isRec && recMode === mode) {
+                    // If Dictate -> Save/Send. If Stream -> Just Stop.
+                    stopVoice(mode === 'dictate');
+                    return;
+                }
+                if (isRec) stopVoice(false); // Switching modes -> Cancel previous
+
+                recMode = mode;
+                dictationBuffer = "";
+
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                isRec = true;
+
+                // UI: Show visualizer for Stream, or just active state for Dictate
+                if (mode === 'stream') {
+                    ui.voiceOver.classList.remove('hidden');
+                    setupViz(stream);
+                } else {
+                    // Dictate mode: maybe different UI? For now using input visualizer but allowing typing?
+                    // User said: "allow current user to just type ... if he dont want to speak at the streaming"
+                    // But for dictate, we probably want to visualize audio too.
+                    document.getElementById('audio-visualizer').classList.add('active');
+                }
+
+                // Lock input only for Stream
+                if (mode === 'stream') {
+                    document.getElementById('audio-visualizer').classList.add('active');
+                    ui.txtIn.disabled = true;
+                    ui.txtIn.placeholder = "Streaming... (Typing Disabled)";
+                } else {
+                    ui.txtIn.placeholder = "Dictating... (Processing logic on stop)";
+                }
 
                 tStart = Date.now();
-                tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart) / 1000); ui.timer.innerText = `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }, 1000);
+                if (mode === 'stream') {
+                    tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart) / 1000); ui.timer.innerText = `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`; }, 1000);
+                }
 
                 const client = createClient(DEEPGRAM_KEY);
-                // Fix: Nova-3 + long endpointing + vad to ensure nothing is missed
                 dgSocket = client.listen.live({
                     model: "nova-3", language: userData.language, smart_format: true, interim_results: true,
                     endpointing: 1000, vad_events: true, punctuate: true
@@ -516,28 +588,69 @@
                 dgSocket.on(LiveTranscriptionEvents.Open, () => {
                     mediaRec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
                     mediaRec.ondataavailable = (e) => { if (e.data.size > 0 && dgSocket.getReadyState() === 1) dgSocket.send(e.data); };
-                    mediaRec.start(250); // High frequency chunks
+                    mediaRec.start(250);
                 });
 
                 dgSocket.on(LiveTranscriptionEvents.Transcript, (data) => {
                     const txt = data.channel.alternatives[0].transcript;
-                    if (txt.trim()) pushMsg(txt, data.is_final);
+                    if (!txt.trim()) return;
+
+                    if (recMode === 'stream') {
+                        // Stream: Send immediately
+                        pushMsg(txt, data.is_final);
+                    } else {
+                        // Dictate: Accumulate final results
+                        lastInterim = txt; // Always save latest
+                        if (data.is_final) {
+                            dictationBuffer += (dictationBuffer ? " " : "") + txt;
+                            lastInterim = ""; // Clear interim since we have final
+                        }
+                    }
                 });
 
                 dgSocket.on(LiveTranscriptionEvents.Error, () => stopVoice(false));
-            } catch (e) { stopVoice(false); }
+            } catch (e) { console.error(e); stopVoice(false); }
         }
 
-        function stopVoice(save) {
+        async function stopVoice(save) {
+            // Wait to let final transcript arrive before killing socket
+            if (save && recMode === 'dictate') {
+                const btn = document.getElementById('dictate-btn');
+                const originalIcon = btn.innerHTML;
+                // Show spinner
+                btn.innerHTML = `<svg class="w-6 h-6 animate-spin fill-current" viewBox="0 0 24 24"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg>`;
+                ui.txtIn.placeholder = "Transcribing... please wait";
+
+                await new Promise(r => setTimeout(r, 1500)); // Increased to 1.5s
+
+                // Use buffer OR fallback to last interim
+                const finalMsg = dictationBuffer.trim() || lastInterim.trim();
+
+                if (finalMsg) {
+                    pushMsg(finalMsg, true);
+                    showToast("Sent!");
+                } else {
+                    showToast("No speech detected.");
+                }
+                btn.innerHTML = originalIcon;
+            }
+
             isRec = false; mediaRec?.stop(); dgSocket?.finish(); clearInterval(tInt);
             ui.voiceOver.classList.add('hidden'); ui.timer.innerText = "00:00";
 
             // Input Visualizer OFF
             document.getElementById('audio-visualizer').classList.remove('active');
+
+            // Re-enable input
             ui.txtIn.disabled = false;
             ui.txtIn.placeholder = "Type a message";
 
+            // Stream Mode Cleanup
             if (!save && activeSegmentRef) { remove(activeSegmentRef); activeSegmentRef = null; }
+
+            recMode = null;
+            dictationBuffer = "";
+            lastInterim = "";
         }
 
         function setupViz(stream) {
@@ -550,9 +663,9 @@
             }; draw();
         }
 
-        ui.txtIn.oninput = () => { ui.sendBtn.classList.toggle('hidden', ui.txtIn.value.trim() === ""); ui.micBtn.classList.toggle('hidden', ui.txtIn.value.trim() !== ""); };
+        ui.txtIn.oninput = () => { ui.sendBtn.classList.toggle('hidden', ui.txtIn.value.trim() === ""); };
         ui.sendBtn.onclick = () => { if (ui.txtIn.value.trim()) { pushMsg(ui.txtIn.value.trim(), true); ui.txtIn.value = ''; ui.txtIn.oninput(); } };
-        ui.micBtn.onclick = startVoice;
+        ui.micBtn.onclick = () => startVoice('stream');
         ui.logout.onclick = clearSession;
         document.getElementById('btn-connect').onclick = () => connectToApp(false);
         ui.ttsBtn.onclick = () => {
@@ -567,13 +680,20 @@
                 const path = currentChatId === userData.room
                     ? `chats/${userData.room}/messages`
                     : `chats/${currentChatId}/messages`;
-                remove(ref(db, path));
+                remove(ref(db, path)).then(() => showToast("Chat cleared"));
             }
+        };
+        document.getElementById('share-link-btn').onclick = () => {
+            // Copy current URL (or clean base URL)
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => showToast("Link copied to clipboard!"));
         };
         document.getElementById('raise-hand-btn').onclick = () => {
             pushMsg("raised hand", true);
             showToast("Hand raised!");
         };
+        document.getElementById('dictate-btn').onclick = () => startVoice('dictate');
+
 
         function showToast(msg) {
             const t = document.createElement('div');
