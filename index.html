@@ -339,12 +339,35 @@
                     headers: { "Cartesia-Version": "2025-04-16", "X-API-Key": CARTESIA_API_KEY, "Content-Type": "application/json" },
                     body: JSON.stringify({ "model_id": "sonic-3-latest", "transcript": transcript, "voice": { "mode": "id", "id": voiceId }, "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 }, "speed": "normal", "generation_config": { "speed": 1, "volume": 1, "emotion": item.emotion || "neutral" } })
                 });
+
                 if (response.ok) {
-                    const audio = new Audio(URL.createObjectURL(await response.blob()));
-                    audio.onended = () => { isAudioPlaying = false; processAudioQueue(); };
-                    await audio.play();
-                } else { isAudioPlaying = false; processAudioQueue(); }
-            } catch (e) { isAudioPlaying = false; processAudioQueue(); }
+                    const blob = await response.blob();
+                    const audio = new Audio(URL.createObjectURL(blob));
+
+                    const finish = () => {
+                        isAudioPlaying = false;
+                        processAudioQueue();
+                    };
+
+                    audio.onended = finish;
+                    audio.onerror = (e) => { console.error("TTS Error", e); finish(); };
+
+                    try {
+                        await audio.play();
+                    } catch (playErr) {
+                        console.error("Autoplay prevented", playErr);
+                        finish();
+                    }
+                } else {
+                    console.error("TTS API Error");
+                    isAudioPlaying = false;
+                    processAudioQueue();
+                }
+            } catch (e) {
+                console.error("TTS Fetch Error", e);
+                isAudioPlaying = false;
+                processAudioQueue();
+            }
         }
 
         async function translate(text, from, to) {
@@ -582,7 +605,7 @@
                 const client = createClient(DEEPGRAM_KEY);
                 dgSocket = client.listen.live({
                     model: "nova-3", language: userData.language, smart_format: true, interim_results: true,
-                    endpointing: 1000, vad_events: true, punctuate: true
+                    endpointing: 500, vad_events: true, punctuate: true, utterance_end_ms: 2000
                 });
 
                 dgSocket.on(LiveTranscriptionEvents.Open, () => {
