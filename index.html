@@ -11,14 +11,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; height: 100vh; margin: 0; overflow: hidden; touch-action: manipulation; }
+        
+        /* Native Mobile Lock: Disable Zoom */
         input, select, button { font-size: 16px !important; touch-action: manipulation; }
+        
         .chat-bg { background-color: #efeae2; background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); background-size: 400px; }
+        
         @media (max-width: 767px) {
             #sidebar { position: absolute; width: 100%; height: 100%; z-index: 20; transition: transform 0.3s ease; }
             #chat-main { position: absolute; width: 100%; height: 100%; z-index: 30; transform: translateX(100%); transition: transform 0.3s ease; }
             .mobile-chat-open #chat-main { transform: translateX(0); }
             .mobile-chat-open #sidebar { transform: translateX(-100%); }
         }
+
         .bubble-shadow { box-shadow: 0 1px 0.5px rgba(0,0,0,0.15); }
         .emotion-emoji { font-size: 1.25rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1)); }
     </style>
@@ -32,15 +37,18 @@
                 <h2 class="text-xl font-bold">Group Gateway</h2>
                 <p class="text-xs opacity-80 uppercase tracking-widest mt-1">Join Conversation</p>
             </div>
+            
             <div class="p-6 space-y-4">
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Display Name</label>
                     <input id="user-display-name" type="text" placeholder="Enter name" maxlength="20" class="w-full border-2 border-gray-100 rounded-xl px-4 py-2 focus:border-[#008069] outline-none">
                 </div>
+
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Room Code</label>
                     <input id="room-code" type="text" value="" placeholder="SUCCESS" class="w-full border-2 border-gray-100 rounded-xl px-4 py-2 text-center text-xl font-bold focus:border-[#008069] outline-none uppercase tracking-widest">
                 </div>
+                
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Gender</label>
@@ -51,20 +59,26 @@
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Language</label>
-                        <select id="user-lang" class="w-full border-2 border-gray-100 rounded-lg px-3 py-2 outline-none focus:border-[#008069] bg-white text-sm"></select>
+                        <select id="user-lang" class="w-full border-2 border-gray-100 rounded-lg px-3 py-2 outline-none focus:border-[#008069] bg-white text-sm">
+                            <!-- Populated by JS -->
+                        </select>
                     </div>
                 </div>
-                <button id="btn-connect" class="w-full bg-[#00a884] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#008069] transition-all uppercase tracking-widest mt-2">Start Session</button>
+
+                <button id="btn-connect" class="w-full bg-[#00a884] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#008069] transition-all uppercase tracking-widest mt-2">
+                    Start Session
+                </button>
             </div>
         </div>
     </div>
 
     <!-- MAIN INTERFACE -->
     <div id="app-container" class="flex h-full w-full max-w-[1600px] bg-white overflow-hidden relative opacity-0 transition-opacity duration-500">
+        
         <aside id="sidebar" class="w-[350px] border-r border-gray-200 bg-white flex flex-col shrink-0">
             <div class="h-[64px] bg-[#008069] flex items-center justify-between px-4 text-white shrink-0">
                 <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-teal-900 flex items-center justify-center font-bold">GE</div></div>
-                <div class="flex gap-5 items-center opacity-70">
+                <div class="flex gap-6 items-center opacity-70">
                     <button id="logout-btn" title="Logout" class="hover:text-red-400 transition-colors"><i class="fa-solid fa-right-from-bracket"></i></button>
                     <i class="fa-solid fa-message"></i>
                     <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -75,7 +89,7 @@
                     <div id="sidebar-avatar" class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-lg shrink-0">SU</div>
                     <div class="flex-1">
                         <h3 id="sidebar-room-name" class="font-semibold text-gray-800 text-sm">SUCCESS</h3>
-                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic uppercase tracking-tighter">Parallel Audio & Emotion Fixed</p>
+                        <p class="text-[12px] text-teal-600 font-medium animate-pulse italic uppercase tracking-tighter">Filler Word Removal Active</p>
                     </div>
                 </div>
             </div>
@@ -92,7 +106,9 @@
                     </div>
                 </div>
                 <div class="flex gap-6 items-center">
-                    <button id="tts-toggle-btn" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl"><i id="tts-icon" class="fa-solid fa-volume-xmark"></i></button>
+                    <button id="tts-toggle-btn" class="text-gray-400 hover:text-[#008069] transition-colors p-2 text-xl">
+                        <i id="tts-icon" class="fa-solid fa-volume-xmark"></i>
+                    </button>
                     <i class="fa-solid fa-ellipsis-vertical text-gray-500"></i>
                 </div>
             </header>
@@ -106,6 +122,7 @@
                     <button id="send-btn" class="hidden text-teal-600 p-1"><i class="fa-solid fa-paper-plane text-xl"></i></button>
                     <button id="mic-btn" class="text-gray-500 p-1"><i class="fa-solid fa-microphone text-xl"></i></button>
                 </div>
+
                 <div id="voice-overlay" class="absolute inset-0 bg-[#f0f2f5] z-50 flex items-center px-4 hidden">
                     <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-3"></div>
                     <span id="timer" class="font-mono text-xs text-gray-500 w-10">00:00</span>
@@ -122,17 +139,19 @@
         import { getDatabase, ref, push, set, onChildAdded, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { createClient, LiveTranscriptionEvents } from 'https://cdn.jsdelivr.net/npm/@deepgram/sdk@3/+esm';
 
-        // --- KEYS & CONFIG ---
+        // --- CONFIG ---
         const CARTESIA_API_KEY = "sk_car_yWEX9Mp2LwKju8FXyosGhj";
         const CARTESIA_VOICES = { "Male": "aa3fdf22-9f5e-4238-8016-31f515ded9a3", "Female": "cbaf8084-f009-4838-a096-07ee2e6612b1" };
         const DEEPGRAM_KEY = '11ee938d032ce7c36c6fa82338274be5e4ada847';
         const firebaseConfig = { apiKey: "AIzaSyC93B2GgE3HzaWl5gW_mRroobQybaZNFJs", authDomain: "macx-5feca.firebaseapp.com", databaseURL: "https://macx-5feca-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "macx-5feca" };
+        
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
         const langList = ["Abkhaz","Acehnese","Acholi","Afar","Afrikaans","Albanian","Alur","Amharic","Arabic","Armenian","Assamese","Avar","Awadhi","Aymara","Azerbaijani","Balinese","Baluchi","Bambara","Baoulé","Bashkir","Basque","Batak Karo","Batak Simalungun","Batak Toba","Belarusian","Bemba","Bengali","Betawi","Bhojpuri","Bikol","Bosnian","Breton","Bulgarian","Buryat","Cantonese","Catalan","Cebuano","Chamorro","Chechen","Chichewa","Chinese (Simplified)","Chinese (Traditional)","Chuukese","Chuvash","Corsican","Crimean Tatar (Cyrillic)","Crimean Tatar (Latin)","Croatian","Czech","Danish","Dari","Dhivehi","Dinka","Dogri","Dombe","Dutch","Dyula","Dzongkha","English","Esperanto","Estonian","Ewe","Faroese","Fijian","Filipino","Finnish","Fon","French","French (Canada)","Frisian","Friulian","Fulani","Ga","Galician","Georgian","German","Greek","Guarani","Gujarati","Haitian Creole","Hakha Chin","Hausa","Hawaiian","Hebrew","Hiligaynon","Hindi","Hmong","Hungarian","Hunsrik","Iban","Icelandic","Igbo","Ilocano","Indonesian","Inuktut (Latin)","Inuktut (Syllabics)","Irish","Italian","Jamaican Patois","Japanese","Javanese","Jingpo","Kalaallisut","Kannada","Kanuri","Kapampangan","Kazakh","Khasi","Khmer","Kiga","Kikongo","Kinyarwanda","Kituba","Kokborok","Komi","Konkani","Korean","Krio","Kurdish (Kurmanji)","Kurdish (Sorani)","Kyrgyz","Lao","Latgalian","Latin","Latvian","Ligurian","Limburgish","Lingala","Lithuanian","Lombard","Luganda","Luo","Luxembourgish","Macedonian","Madurese","Maithili","Makassar","Malagasy","Malay","Malay (Jawi)","Malayalam","Maltese","Mam","Manx","Maori","Marathi","Marshallese","Marwadi","Mauritian Creole","Meadow Mari","Meiteilon (Manipuri)","Minang","Mizo","Mongolian","Myanmar (Burmese)","Nahuatl (Eastern Huasteca)","Ndau","Ndebele (South)","Nepalbhasa (Newari)","Nepali","NKo","Norwegian","Nuer","Occitan","Odia (Oriya)","Oromo","Ossetian","Pangasinan","Papiamento","Pashto","Persian","Polish","Portuguese (Brazil)","Portuguese (Portugal)","Punjabi (Gurmukhi)","Punjabi (Shahmukhi)","Quechua","Qʼeqchiʼ","Romani","Romanian","Rundi","Russian","Sami (North)","Samoan","Sango","Sanskrit","Santali (Latin)","Santali (Ol Chiki)","Scots Gaelic","Sepedi","Serbian","Sesotho","Seychellois Creole","Shan","Shona","Sicilian","Silesian","Sindhi","Sinhala","Slovak","Slovenian","Somali","check","Spanish","Sundanese","Susu","Swahili","Swati","Swedish","Tahitian","Tajik","Tamazight","Tamazight (Tifinagh)","Tamil","Tatar","Telugu","Tetum","Thai","Tibetan","Tigrinya","Tiv","Tok Pisin","Tongan","Tshiluba","Tsonga","Tswana","Tulu","Tumbuka","Turkish","Turkmen","Tuvan","Twi","Udmurt","Ukrainian","Urdu","Uyghur","Uzbek","Venda","Venetian","Vietnamese","Waray","Welsh","Wolof","Xhosa","Yakut","Yiddish","Yoruba","Yucatec Maya","Zapotec","Zulu"];
-        const EMOTIONS = { "neutral": "😐", "angry": "😠", "excited": "🤩", "content": "😊", "sad": "😢", "scared": "😨", "happy": "😀", "apologetic": "🙇", "curious": "🤔", "amazed": "😲", "triumphant": "🏆", "bored": "😴", "tired": "🥱", "confused": "😵‍💫", "determined": "✊", "proud": "🦁", "nervous": "😬" };
+        const EMOTIONS = { "neutral": "😐", "angry": "😠", "excited": "🤩", "content": "😊", "sad": "😢", "scared": "😨", "happy": "😀", "apologetic": "🙇", "curious": "🤔", "amazed": "😲", "triumphant": "🏆" };
 
+        // --- SESSION STATE ---
         let myUserId = `user-${Math.floor(Math.random()*99999)}`;
         let userData = { name: '', room: 'SUCCESS', gender: 'Male', language: 'nl' };
         let isRec = false, mediaRec, dgSocket, aCtx, aFr, tStart, tInt, activeSegmentRef = null;
@@ -144,7 +163,15 @@
             modal: document.getElementById('gateway-modal'), app: document.getElementById('app-container'), langSelect: document.getElementById('user-lang'), msgWin: document.getElementById('msg-stream'), txtIn: document.getElementById('text-input'), sendBtn: document.getElementById('send-btn'), micBtn: document.getElementById('mic-btn'), voiceOver: document.getElementById('voice-overlay'), timer: document.getElementById('timer'), viz: document.getElementById('viz'), ttsBtn: document.getElementById('tts-toggle-btn'), ttsIcon: document.getElementById('tts-icon'), logout: document.getElementById('logout-btn')
         };
 
-        // --- SESSION PERSISTENCE ---
+        // --- FILLER DETACHMENT ENGINE ---
+        function cleanTranscript(text) {
+            if (!text) return "";
+            // Regex to find disfluencies as whole words, case insensitive
+            const fillers = /\b(uhm|um|ah|huh|er|eh|hm|uh)\b/gi;
+            return text.replace(fillers, "").replace(/\s\s+/g, ' ').trim();
+        }
+
+        // --- PERSISTENCE ---
         function saveSession() { localStorage.setItem('orbit_session', JSON.stringify({ ...userData, joinTime: joinTimestamp })); }
         function loadSession() {
             const saved = localStorage.getItem('orbit_session');
@@ -157,54 +184,44 @@
         }
         function clearSession() { localStorage.removeItem('orbit_session'); location.reload(); }
 
-        // --- AUDIO QUEUE SYSTEM ---
-        async function processAudioQueue() {
+        // --- AUDIO QUEUE ---
+        async function processQueue() {
             if (isAudioPlaying || audioQueue.length === 0) return;
             isAudioPlaying = true;
             const item = audioQueue.shift();
             try {
                 const voiceId = CARTESIA_VOICES[item.gender] || CARTESIA_VOICES["Male"];
                 const transcript = `<emotion value="${item.emotion || 'neutral'}" />${item.text}`;
-                const response = await fetch("https://api.cartesia.ai/tts/bytes", {
+                const res = await fetch("https://api.cartesia.ai/tts/bytes", {
                     method: "POST",
                     headers: { "Cartesia-Version": "2025-04-16", "X-API-Key": CARTESIA_API_KEY, "Content-Type": "application/json" },
                     body: JSON.stringify({ "model_id": "sonic-3-latest", "transcript": transcript, "voice": { "mode": "id", "id": voiceId }, "output_format": { "container": "wav", "encoding": "pcm_f32le", "sample_rate": 44100 }, "speed": "normal", "generation_config": { "speed": 1, "volume": 1, "emotion": item.emotion || "neutral" } })
                 });
-                if (response.ok) {
-                    const audio = new Audio(URL.createObjectURL(await response.blob()));
-                    audio.onended = () => { isAudioPlaying = false; processAudioQueue(); };
+                if (res.ok) {
+                    const audio = new Audio(URL.createObjectURL(await res.blob()));
+                    audio.onended = () => { isAudioPlaying = false; processQueue(); };
                     await audio.play();
-                } else { isAudioPlaying = false; processAudioQueue(); }
-            } catch (e) { isAudioPlaying = false; processAudioQueue(); }
+                } else { isAudioPlaying = false; processQueue(); }
+            } catch (e) { isAudioPlaying = false; processQueue(); }
         }
 
+        // --- TRANSLATION ---
         async function translate(text, from, to) {
             if (from === to) return text;
             try {
                 const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURI(text)}`);
-                const data = await res.json();
-                return data[0][0][0];
+                const data = await res.json(); return data[0][0][0];
             } catch (e) { return text; }
         }
 
-        function init() {
-            langList.forEach(l => {
-                const opt = document.createElement('option');
-                const codeMap = { "Dutch": "nl", "Filipino": "tl", "Tagalog": "tl", "English": "en", "Spanish": "es", "French": "fr", "German": "de" };
-                opt.value = codeMap[l] || "en";
-                opt.text = l === "Dutch" ? "Dutch Flemish" : l;
-                if(l === "Dutch") opt.selected = true;
-                ui.langSelect.add(opt);
-            });
-        }
-
+        // --- CORE CONNECT ---
         function connectToApp(isAuto = false) {
             if (!isAuto) {
-                const nameInput = document.getElementById('user-display-name').value.trim();
-                const roomInput = document.getElementById('room-code').value.trim().toUpperCase();
-                if(!nameInput) return alert("Enter Display Name");
-                userData.name = nameInput.substring(0, 8);
-                userData.room = roomInput || 'SUCCESS';
+                const n = document.getElementById('user-display-name').value.trim();
+                const r = document.getElementById('room-code').value.trim().toUpperCase();
+                if(!n) return alert("Enter Display Name");
+                userData.name = n.substring(0, 8);
+                userData.room = r || 'SUCCESS';
                 userData.gender = document.getElementById('user-gender').value;
                 userData.language = ui.langSelect.value;
                 joinTimestamp = Date.now();
@@ -219,28 +236,17 @@
             bindFirebase(userData.room);
         }
 
-        function getEmotion(text) {
-            const l = text.toLowerCase();
-            if (l.includes("sorry")) return "apologetic";
-            if (l.includes("wow")) return "amazed";
-            if (l.includes("angry")) return "angry";
-            if (l.includes("happy")) return "happy";
-            return "neutral";
-        }
+        function pushMsg(rawText, isFinal = true) {
+            // DETACH FILLERS before pushing to Firebase
+            const text = cleanTranscript(rawText);
+            if (!text) return; // Skip if it was just fillers
 
-        // --- FIXED TRANSCRIPTIONCommiter ---
-        function pushMsg(text, isFinal = true) {
             const emotion = isFinal ? getEmotion(text) : "neutral";
             const emoji = EMOTIONS[emotion] || "😐";
             const path = isFinal ? `chats/${userData.room}/messages` : `chats/${userData.room}/drafts`;
-            const targetRef = isFinal ? push(ref(db, path)) : (activeSegmentRef || push(ref(db, path)));
-            if (!isFinal) activeSegmentRef = targetRef;
-
-            set(targetRef, {
-                text, senderId: myUserId, senderName: userData.name, gender: userData.gender, lang: userData.language, 
-                emotion, emoji, timestamp: Date.now()
-            });
-
+            const tRef = isFinal ? push(ref(db, path)) : (activeSegmentRef || push(ref(db, path)));
+            if (!isFinal) activeSegmentRef = tRef;
+            set(tRef, { text, senderId: myUserId, senderName: userData.name, gender: userData.gender, lang: userData.language, emotion, emoji, timestamp: Date.now() });
             if (isFinal && activeSegmentRef) { remove(activeSegmentRef); activeSegmentRef = null; }
         }
 
@@ -251,7 +257,7 @@
                 if (msg.senderId !== myUserId && msg.timestamp >= joinTimestamp) {
                     msg.translatedText = await translate(msg.text, msg.lang, userData.language);
                     audioQueue.push({ text: msg.translatedText, gender: msg.gender, emotion: msg.emotion });
-                    if(ttsEnabled) processAudioQueue();
+                    if(ttsEnabled) processQueue();
                 }
                 renderBubble(msg);
             });
@@ -267,36 +273,39 @@
             div.className = `flex ${isMe ? 'justify-end' : 'justify-start'} ${isLive ? 'is-live opacity-50' : ''}`;
             const content = (!isMe && msg.translatedText) ? `${msg.translatedText}` : msg.text;
             div.innerHTML = `<div class="${isMe ? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'} p-2 rounded-lg bubble-shadow max-w-[85%] flex items-end gap-2"><div class="flex-1"><p class="text-[14.5px] text-[#111b21] leading-tight pr-1 pb-1">${content}</p><div class="flex items-center gap-1"><span class="text-[8px] text-gray-400 font-bold uppercase tracking-tighter">${msg.senderName} • ${msg.gender} • ${msg.lang}</span></div></div><div class="emotion-emoji shrink-0">${msg.emoji || '😐'}</div></div>`;
-            ui.msgWin.appendChild(div);
-            ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
+            ui.msgWin.appendChild(div); ui.msgWin.scrollTop = ui.msgWin.scrollHeight;
         }
 
-        // --- FIXED DEEPGRAM (NO WORDS MISSED) ---
+        function getEmotion(text) {
+            const l = text.toLowerCase();
+            if (l.includes("sorry")) return "apologetic";
+            if (l.includes("wow")) return "amazed";
+            if (l.includes("angry")) return "angry";
+            if (l.includes("happy")) return "happy";
+            return "neutral";
+        }
+
+        // --- DEEPGRAM (PARALLEL & ROBUST) ---
         async function startVoice() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 isRec = true; ui.voiceOver.classList.remove('hidden'); setupViz(stream);
                 tStart = Date.now();
                 tInt = setInterval(() => { const s = Math.floor((Date.now() - tStart)/1000); ui.timer.innerText = `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`; }, 1000);
-
-                const client = createClient(DEEPGRAM_KEY);
-                // Fix: Nova-3 + long endpointing + vad to ensure nothing is missed
-                dgSocket = client.listen.live({
+                const dgClient = createClient(DEEPGRAM_KEY);
+                dgSocket = dgClient.listen.live({ 
                     model: "nova-3", language: userData.language, smart_format: true, interim_results: true, 
-                    endpointing: 1000, vad_events: true, punctuate: true
+                    endpointing: 1000, vad_events: true, punctuate: true, filler_words: false 
                 });
-
                 dgSocket.on(LiveTranscriptionEvents.Open, () => {
                     mediaRec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
                     mediaRec.ondataavailable = (e) => { if (e.data.size > 0 && dgSocket.getReadyState() === 1) dgSocket.send(e.data); };
-                    mediaRec.start(250); // High frequency chunks
+                    mediaRec.start(250);
                 });
-
                 dgSocket.on(LiveTranscriptionEvents.Transcript, (data) => {
                     const txt = data.channel.alternatives[0].transcript;
                     if (txt.trim()) pushMsg(txt, data.is_final);
                 });
-
                 dgSocket.on(LiveTranscriptionEvents.Error, () => stopVoice(false));
             } catch (e) { stopVoice(false); }
         }
@@ -316,20 +325,27 @@
             }; draw();
         }
 
-        ui.txtIn.oninput = () => { ui.sendBtn.classList.toggle('hidden', ui.txtIn.value.trim()===""); ui.micBtn.classList.toggle('hidden', ui.txtIn.value.trim()!==""); };
-        ui.sendBtn.onclick = () => { if(ui.txtIn.value.trim()){ pushMsg(ui.txtIn.value.trim(), true); ui.txtIn.value=''; ui.txtIn.oninput(); } };
-        ui.micBtn.onclick = startVoice;
+        // --- INIT ---
+        langList.forEach(l => {
+            const opt = document.createElement('option');
+            const codeMap = { "Dutch": "nl", "Filipino": "tl", "Tagalog": "tl", "English": "en" };
+            opt.value = codeMap[l] || "en"; opt.text = l === "Dutch" ? "Dutch Flemish" : l;
+            if(l === "Dutch") opt.selected = true; ui.langSelect.add(opt);
+        });
+
         ui.logout.onclick = clearSession;
         document.getElementById('btn-connect').onclick = () => connectToApp(false);
         ui.ttsBtn.onclick = () => {
             ttsEnabled = !ttsEnabled;
             ui.ttsIcon.className = ttsEnabled ? "fa-solid fa-volume-high text-[#008069]" : "fa-solid fa-volume-xmark text-gray-400";
-            if(ttsEnabled) processAudioQueue();
+            if(ttsEnabled) processQueue();
         };
+        ui.txtIn.oninput = () => { ui.sendBtn.classList.toggle('hidden', ui.txtIn.value.trim()===""); ui.micBtn.classList.toggle('hidden', ui.txtIn.value.trim()!==""); };
+        ui.sendBtn.onclick = () => { if(ui.txtIn.value.trim()){ pushMsg(ui.txtIn.value.trim(), true); ui.txtIn.value=''; ui.txtIn.oninput(); } };
+        ui.micBtn.onclick = startVoice;
         document.getElementById('stop-voice').onclick = () => stopVoice(true);
         document.getElementById('cancel-voice').onclick = () => stopVoice(false);
 
-        init();
         loadSession();
     </script>
 </body>
